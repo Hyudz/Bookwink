@@ -106,12 +106,37 @@ class web_controller extends Controller
     }
 
     function profile_page() {
-
-        return view('profile');
+        $user_details = Auth::user();
+        return view('profile', ['user_details' => $user_details]);
     }
 
     function forgot_password() {
         return view('forgot');
+    }
+    function update_profile(Request $request, $id){
+        $request->validate([
+            'username' => 'required',
+            'birthday' => 'required|date',
+            'address' => 'required',
+            'phone_number' => 'required',
+        ]);
+
+        $userProfile = users_table::find($id);
+    
+        $userProfile->update([
+            'username' => $request->username,
+            'birthdate' => $request->birthdate,
+            'address' => $request->address,
+            'contactNo' => $request->contactNo,
+        ]);
+    
+        return redirect()->route('homepage')->with('success', 'Profile updated successfully');
+    }
+
+    function delete_profile($id){
+        $userProfile = users_table::find($id);
+        $userProfile->delete();
+        return redirect()->route('login')->with('success', 'Profile deleted successfully');
     }
     
 }

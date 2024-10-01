@@ -25,6 +25,8 @@ Route::get('/about_us', [web_controller::class,'about_us']) -> name('about_us');
 Route::get('/profile', [web_controller::class,'profile_page']) -> name('profile');
 Route::get('/forgot_password', [web_controller::class,'forgot_password']) -> name('reset_password');
 Route::post('/signup', [web_controller::class,'signup_post']) -> name('signup_post');
+Route::put('/update_profile/{id}', [web_controller::class,'update_profile']) -> name('update_profile');
+Route::delete('/delete_profile/{id}', [web_controller::class,'delete_profile']) -> name('delete_profile');
 
 
 // admin
