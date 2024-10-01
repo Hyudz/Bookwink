@@ -9,37 +9,80 @@
     </head>
     <body class="d-flex flex-column min-vh-100">
 
-        <!-- Page Content -->
         <div class="flex-grow-1"> 
             <div class="d-flex flex-row ">
                 <div class=" ms-5 mt-5 d-flex flex-column w-50">
                     <div class="mt-5"></div>
                     <div class="mt-5"></div>
                     <div class="mt-5"></div>
-                    <form class="mt-5" action="{{route('login_post')}}" method="get">
+
+                    <div class="mt-5">
+            @if($errors->any())
+                <div class="col-12">
+                    @foreach($errors->all() as $error)
+                        <div class="alert alert-danger">{{$error}}</div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            @if(session()->has('error'))
+                <div class="alert alert-danger">{{session('error')}}</div>
+            @endif
+
+            @if(session()->has('success'))
+                <div class="alert alert-success">{{session('success')}}</div>
+            @endif
+        </div>
+                    <form class="mt-5" action="{{route('signup_post')}}" method="post">
+                        @csrf
                         <div class="d-flex flex-row w-100">
                             <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                                <input type="email" name="email" required class="form-control" id="floatingInput" placeholder="name@example.com">
                                 <label for="floatingInput">Email:</label>
                             </div>
 
                             <div class="form-floating mb-3 ms-3">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="">
+                                <input type="text" name="username" required class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">Username:</label>
                             </div>
                         </div>
 
                         <div class="d-flex flex-row w-100">
                             <div class="form-floating mb-3">
-                                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                                <input type="password" name="password" required class="form-control" id="floatingPassword" placeholder="Password">
                                 <label for="floatingPassword">Password</label>
                             </div>
 
                             <div class="form-floating mb-3 ms-3">
-                                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                                <input type="password" name="password_confirmation" required class="form-control" id="floatingPassword" placeholder="Password">
                                 <label for="floatingPassword">Confirm Password</label>
                             </div>
                         </div>
+
+                        <div class="d-flex flex-row w-100">
+
+                            <div class="form-floating mb-3">
+                                <input type="date" name="birthday" required class="form-control" id="floatingInput" placeholder="">
+                                <label for="floatingInput">Birthday:</label>
+                            </div>
+
+                            <div class="d-flex flex-column mb-3 ms-3">
+                                <label for="gender">Gender</label>
+                                <select id="gender" name="gender">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="w-50">
+                            <div class="form-floating mb-3">
+                                <input type="text" name="address" required class="form-control" id="floatingInput" placeholder="">
+                                <label for="floatingInput">Address:</label>
+                            </div>
+                        </div>
+
                         <button type="submit" class="btn btn-secondary mt-5 w-25">SIGN UP</button>
                     </form>
 

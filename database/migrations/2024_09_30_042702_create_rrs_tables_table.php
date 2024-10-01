@@ -15,6 +15,12 @@ return new class extends Migration
     {
         Schema::create('rrs_tables', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users_tables')->onDelete('cascade');
+            $table->unsignedBigInteger('book_id');
+            $table->foreign('book_id')->references('id')->on('books_tables')->onDelete('cascade');
+            $table->integer('rating');
+            $table->string('review');
             $table->timestamps();
         });
     }

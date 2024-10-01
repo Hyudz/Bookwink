@@ -11,19 +11,38 @@
 
         <!-- Page Content -->
         <div class="flex-grow-1"> 
+        <div class="mt-5">
+            @if($errors->any())
+                <div class="col-12">
+                    @foreach($errors->all() as $error)
+                        <div class="alert alert-danger">{{$error}}</div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            @if(session()->has('error'))
+                <div class="alert alert-danger">{{session('error')}}</div>
+            @endif
+
+            @if(session()->has('success'))
+                <div class="alert alert-success">{{session('success')}}</div>
+            @endif
+        </div>
             <div class="d-flex flex-row ">
                 <div class=" ms-5 mt-5 d-flex flex-column w-50">
                     <div class="mt-5"></div>
                     <div class="mt-5"></div>
                     <div class="mt-5"></div>
                     <h1>Welcome back!</h1>
-                    <form class="mt-5" action="{{route('login_post')}}" method="get">
+                    <form class="mt-5" action="{{route('login_post')}}" method="post">
+                        @csrf
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                            <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com">
                             <label for="floatingInput">Email:</label>
                         </div>
                         <div class="form-floating mt-5">
-                            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                            <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
                             <label for="floatingPassword">Password</label>
                         </div>
                         <button type="submit" class="btn btn-secondary mt-5 w-25">SIGN IN</button>

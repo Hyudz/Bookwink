@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://kit.fontawesome.com/de52212229.js" crossorigin="anonymous"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     </head>
     <body>
@@ -17,7 +18,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{route('login_post')}}">BOOKS</a>
+                        <a class="nav-link active" href="{{route('homepage')}}">BOOKS</a>
                     </li>
                 
                     <li class="nav-item">
@@ -33,17 +34,13 @@
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
+
+                <div class="d-flex ms-3">
+                    <a href="{{route('profile')}}" ><i class="fa-solid fa-user"></i></a>
+                </div>
             </div>
 
-            <div class="dropdown ms-5">
-                    <div class="dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                    <ul class="dropdown-menu">
-                        <li> <a class="dropdown-item" href="{{route('profile')}}"> Profile</a> </li>
-                        <li> <a class="dropdown-item" href="{{route('login')}}"> Log out</a> </li>
-                    </ul>
-                </div>
+            
         </div>
     </nav>
     </body>

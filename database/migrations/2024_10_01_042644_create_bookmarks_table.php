@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('notifs_tables', function (Blueprint $table) {
+        Schema::create('bookmarks', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users_tables')->onDelete('cascade');
-            $table->string('notification_type');
-            $table->string('message');
-            $table->boolean('is_read');
+            $table->unsignedBigInteger('book_id');
+            $table->foreign('book_id')->references('id')->on('books_tables')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('notifs_tables');
+        Schema::dropIfExists('bookmarks');
     }
 };

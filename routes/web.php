@@ -17,12 +17,14 @@ use App\Http\Controllers\admin\admin_controller;
 
 Route::get('/', [web_controller::class,'login']) -> name('login');
 Route::get('/signup', [web_controller::class,'signup']) -> name('signup');
-Route::get('/homepage', [web_controller::class,'login_post']) -> name('login_post');
+Route::post('/home', [web_controller::class,'login_post']) -> name('login_post');
+Route::get('/homepage', [web_controller::class,'homepage']) -> name('homepage');
 Route::get('/view_books', [web_controller::class,'view_books']) -> name('view_books');
 Route::get('/services', [web_controller::class,'services']) -> name('services');
 Route::get('/about_us', [web_controller::class,'about_us']) -> name('about_us');
 Route::get('/profile', [web_controller::class,'profile_page']) -> name('profile');
 Route::get('/forgot_password', [web_controller::class,'forgot_password']) -> name('reset_password');
+Route::post('/signup', [web_controller::class,'signup_post']) -> name('signup_post');
 
 
 // admin

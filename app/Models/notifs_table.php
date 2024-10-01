@@ -20,4 +20,9 @@ class notifs_table extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(users_table::class, 'user_id', 'id');
+    }
 }

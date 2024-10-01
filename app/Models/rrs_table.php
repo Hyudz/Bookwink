@@ -20,4 +20,16 @@ class rrs_table extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(users_table::class, 'user_id', 'id');
+    }
+
+    public function book()
+    {
+        return $this->belongsTo(books_table::class, 'book_id', 'id');
+    }
+
+    
 }

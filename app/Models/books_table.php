@@ -23,4 +23,19 @@ class books_table extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function borrows()
+    {
+        return $this->hasMany(borrows_table::class, 'book_id', 'id');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(rrs_table::class, 'book_id', 'id');
+    }
+
+    public function bookmarks()
+    {
+        return $this->hasMany(bookmarks::class, 'book_id', 'id');
+    }
 }

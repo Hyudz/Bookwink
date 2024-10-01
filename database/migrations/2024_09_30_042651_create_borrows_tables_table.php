@@ -12,12 +12,20 @@ return new class extends Migration
      * @return void
      */
     public function up()
-    {
-        Schema::create('borrows_tables', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('borrows_table', function (Blueprint $table) {
+        $table->id();
+        $table->unsignedBigInteger('user_id');
+        $table->foreign('user_id')->references('id')->on('users_tables')->onDelete('cascade');
+        $table->unsignedBigInteger('book_id');
+        $table->foreign('book_id')->references('id')->on('books_tables')->onDelete('cascade');
+        $table->date('borrow_date');
+        $table->date('return_date');
+        $table->string('status');
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.
