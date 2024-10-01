@@ -6,7 +6,7 @@
     <title>Profile Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
-<body style="background-color: black;">
+<body>
 
         <nav>
             <div class="bg-secondary">
@@ -14,14 +14,14 @@
             </div>
         </nav>
 
-        <div class="d-flex" style="background-color: red;">
-            <div class="bg-primary d-flex flex-column">
+        <div class="d-flex">
+            <div class=" d-flex flex-column">
                 <h1>Profile Page</h1>
 
                 <a href="{{route('login')}}" type="button" class="btn btn-primary">Logout</a>
             </div>
 
-            <div class="ms-5 d-flex flex-column bg-secondary">
+            <div class="ms-5 d-flex flex-column">
                 <h1>PROFILE</h1>
 
 
