@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('gender');
             $table->string('address');
             $table->string('user_type');
+            $table->string('phone_number');
             $table->timestamps();
         });
     }

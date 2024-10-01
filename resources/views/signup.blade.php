@@ -76,10 +76,19 @@
                             </div>
                         </div>
 
-                        <div class="w-50">
+                        <div class="d-flex flex-row w-100">
                             <div class="form-floating mb-3">
                                 <input type="text" name="address" required class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">Address:</label>
+                            </div>
+
+                            <div class="mb-3 mt-3 ms-3">
+                                +63
+                            </div>
+
+                            <div class="form-floating mb-3 ms-1">
+                                <input type="number" name="phone_number" required class="form-control" maxlength="10" id="floatingInput" placeholder="">
+                                <label for="floatingInput">Phone:</label>
                             </div>
                         </div>
 

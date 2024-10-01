@@ -53,6 +53,7 @@ class web_controller extends Controller
             'birthday' => 'required',
             'gender' => 'required',
             'address' => 'required',
+            'phone_number' => 'required'
             ]);
 
         $data['username'] = $request->username;
@@ -61,6 +62,7 @@ class web_controller extends Controller
         $data['birthday'] = $request->birthday;
         $data['gender'] = $request ->gender;
         $data['address'] = $request->address;
+        $data['phone_number'] = $request->phone_number;
 
         $user = users_table::create([
             'username' => $data['username'],
@@ -70,7 +72,8 @@ class web_controller extends Controller
             'birthday' => $data['birthday'],
             'gender' => $data['gender'],
             'address' => $data['address'],
-            'user_type' => 'user'
+            'user_type' => 'user',
+            'phone_number' => $data['phone_number']
         ]);
 
         if ($user) {
