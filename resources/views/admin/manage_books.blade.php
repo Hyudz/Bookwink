@@ -28,9 +28,13 @@
                         <td>{{$book->category}}</td>
                         <td>{{$book->status}}</td>
                         <td></td>
-                        <td>
+                        <td class="d-flex flex-row">
                             <a href="{{route('admin.edit_book', $book->id)}}" class="btn btn-primary">Edit</a>
-                            <a href="#" class="btn btn-danger">Delete</a>
+                            <form class="ms-3" action="{{route('admin.delete_book', $book->id)}}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">DELETE</button>
+                            </form>
                         </td>
                     </tr>
                 @endforeach

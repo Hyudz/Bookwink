@@ -41,9 +41,9 @@
                 </form>
 
                 <div class="dropdown ms-5">
-                    <div class="dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
+                    <a type="button" href="{{route('login')}}" class="btn btn-danger">
+                        Logout
+                    </a>
                 </div>
             </div>
         </div>

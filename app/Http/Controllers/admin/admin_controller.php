@@ -23,22 +23,26 @@ class admin_controller extends Controller
             'book_author' => 'required',
             'book_category' => 'required',
             'book_description' => 'required',
-            // 'book_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'book_cover' => 'required|image|mimes:jpg,jpeg,png|max:4096',
         ]);
 
-        $book = books_table::create([
+        $file = $request->file('book_cover');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads'), $filename);
+
+        books_table::create([
             'title' => $request->book_name,
             'author' => $request->book_author,
             'category' => $request->book_category,
             'description' => $request->book_description,
-            // 'book_image' => $request->file('book_image')->store('uploads', 'public'),
-            'cover' => 'N/A',
+            'cover' => $filename, 
             'status' => 'available',
             'rating' => 0,
         ]);
-
+    
         return redirect()->route('admin.add_books')->with('success', 'Book added successfully');
     }
+    
 
     function edit_book($id) {
         $book = books_table::find($id);
@@ -46,27 +50,34 @@ class admin_controller extends Controller
         return view('admin.edit_book', ['book' => $book]);
     }
 
-    function edit_book_post(Request $request){
+    function edit_book_post(Request $request) {
 
         $request->validate([
             'book_name' => 'required',
             'book_author' => 'required',
             'book_category' => 'required',
             'book_description' => 'required',
-            // 'book_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'book_cover' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
         ]);
-
+    
         $book = books_table::find($request->id);
         $book->title = $request->book_name;
         $book->author = $request->book_author;
         $book->category = $request->book_category;
         $book->description = $request->book_description;
-        // $book->cover = $request->file('book_image')->store('uploads', 'public');
+    
+        if ($request->hasFile('book_cover')) {
+            $filename = time() . '.' . $request->file('book_cover')->getClientOriginalExtension();
+            $request->file('book_cover')->move(public_path('uploads'), $filename);
+   
+            $book->cover = $filename;
+        }
+    
         $book->save();
-
+    
         return redirect()->route('admin.manage_books')->with('success', 'Book updated successfully');
-
     }
+    
 
     function manage_books() {
 

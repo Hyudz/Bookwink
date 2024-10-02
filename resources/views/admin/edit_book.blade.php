@@ -11,11 +11,13 @@
             @include('admin/navbar')
         </nav>
 
-        <form class="mt-5 d-flex" action="{{route('admin.edit_book_post',$book->id)}}" method="POST">
+        <form class="mt-5 d-flex" action="{{route('admin.edit_book_post',$book->id)}}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="ms-5 bg-primary">
                 <div class="bg-secondary text-white p-3 text-center" style="height: 500px; width: 500px;">
                     <h3>Book Cover</h3>
+                    <img src="{{asset('uploads/'.$book->cover)}}" style="height: 300px; object-fit: contain; margin: 25px;" alt="Book Cover">
+                    <input type="file" class="form-control" name="book_cover" value="{{$book->cover}}" id="floatingCover">
                 </div>
             </div>
             <div class=" container ms-5 me-5">
@@ -49,15 +51,11 @@
 
                     <div class="align-self-center">
                         <button type="submit" class="btn btn-secondary">UPDATE</button>
+                        <a type="button" href="{{route('admin.manage_books')}}" class="btn btn-danger">CANCEL</a>
                     </div>
             </div>
         </form>
 
-        <form action="{{route('admin.delete_book', $book->id)}}" method="POST">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger">DELETE</button>
-        </form>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>
 </html>

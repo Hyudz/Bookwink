@@ -11,11 +11,35 @@
             @include('admin/navbar')
         </nav>
 
-        <form class="mt-5 d-flex" action="{{route('admin.add_books_post')}}" method="POST">
+        <div class="container mt-5">
+            <h1 class="text-center">Add Book</h1>
+
+            <div class="mt-5">
+            @if($errors->any())
+                <div class="col-12">
+                    @foreach($errors->all() as $error)
+                        <div class="alert alert-danger">{{$error}}</div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            @if(session()->has('error'))
+                <div class="alert alert-danger">{{session('error')}}</div>
+            @endif
+
+            @if(session()->has('success'))
+                <div class="alert alert-success">{{session('success')}}</div>
+            @endif
+        </div>
+        </div>
+
+        <form class="mt-5 d-flex" action="{{route('admin.add_books_post')}}" enctype="multipart/form-data" method="POST">
             @csrf
             <div class="ms-5 bg-primary">
                 <div class="bg-secondary text-white p-3 text-center" style="height: 500px; width: 500px;">
                     <h3>Book Cover</h3>
+                    <input type="file" class="form-control" name="book_cover" id="floatingCover">
                 </div>
             </div>
             <div class=" container ms-5 me-5">
