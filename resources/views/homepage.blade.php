@@ -15,53 +15,20 @@
         <!-- HERE LIES THE BOOKS -->
         <div class="row">
 
+        @foreach($books as $book)
         <div class="col-md-3">
-            <a href="{{route('view_books')}}" style="text-decoration: none;">
+            <a href="{{route('view_books', $book->id)}}" style="text-decoration: none;">
                 <div class="card mt-5">
                     <img class="card-img-top" style="height: 200px; object-fit: contain;" src="{{asset('uploads/1.png')}}" alt="book image">
                     <div class="card-body">
-                        <h5 class="card-title" id="book1">Harry Potter and the Philosopher's Stone</h5>
-                        <p class="card-text" style="text-align: justify;">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Soluta quasi deserunt corrupti voluptates? Sit tenetur, non dignissimos, obcaecati quos animi nesciunt officiis cupiditate beatae a natus odio aliquid officia hic!</p>
+                        <h5 class="card-title" id="book">{{$book->title}}</h5>
+                        <p class="card-text" style="text-align: justify;">{{$book->description}}</p>
                     </div>
                 </div>
             </a>
         </div>
+        @endforeach
 
-        <div class="col-md-3">
-            <a href="" style="text-decoration: none;">
-                <div class="card mt-5">
-                    <img class="card-img-top" style="height: 200px; object-fit: contain;" src="{{asset('uploads/2.png')}}" alt="book image">
-                    <div class="card-body">
-                        <h5 class="card-title" id="book2">Harry Potter and the Chamber of Secrets</h5>
-                        <p class="card-text" style="text-align: justify;">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Soluta quasi deserunt corrupti voluptates? Sit tenetur, non dignissimos, obcaecati quos animi nesciunt officiis cupiditate beatae a natus odio aliquid officia hic!</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <div class="col-md-3">
-            <a href="" style="text-decoration: none;">
-                <div class="card mt-5">
-                    <img class="card-img-top" style="height: 200px; object-fit: contain;" src="{{asset('uploads/3.png')}}" alt="book image">
-                    <div class="card-body">
-                        <h5 class="card-title" id="book3">Harry Potter and the Prisoner of Azkaban</h5>
-                        <p class="card-text" style="text-align: justify;">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Soluta quasi deserunt corrupti voluptates? Sit tenetur, non dignissimos, obcaecati quos animi nesciunt officiis cupiditate beatae a natus odio aliquid officia hic!</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <div class="col-md-3">
-            <a href="" style="text-decoration: none;">
-                <div class="card mt-5">
-                    <img class="card-img-top" style="height: 200px; object-fit: contain;" src="{{asset('uploads/4.png')}}" alt="book image">
-                    <div class="card-body">
-                        <h5 class="card-title" id="book4">Harry Potter and the Goblet of Fire</h5>
-                        <p class="card-text" style="text-align: justify;">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Soluta quasi deserunt corrupti voluptates? Sit tenetur, non dignissimos, obcaecati quos animi nesciunt officiis cupiditate beatae a natus odio aliquid officia hic!</p>
-                    </div>
-                </div>
-            </a>
-        </div>
     </div>
 
         </div>

@@ -16,10 +16,24 @@
                 <tr>
                     <th>Title</th>
                     <th>Author</th>
+                    <th>Category</th>
                     <th>Status</th>
                     <th>Borrower</th>
                     <th>Manage</th>
                 </tr>
+                @foreach($books as $book)
+                    <tr>
+                        <td>{{$book->title}}</td>
+                        <td>{{$book->author}}</td>
+                        <td>{{$book->category}}</td>
+                        <td>{{$book->status}}</td>
+                        <td></td>
+                        <td>
+                            <a href="{{route('admin.edit_book', $book->id)}}" class="btn btn-primary">Edit</a>
+                            <a href="#" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                @endforeach
             </table>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

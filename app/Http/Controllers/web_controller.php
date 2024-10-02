@@ -7,6 +7,7 @@ use App\Models\users_table;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\books_table;
 
 class web_controller extends Controller
 {
@@ -23,7 +24,9 @@ class web_controller extends Controller
     }
 
     function homepage() {
-        return view('homepage');
+
+        $books = books_table::all();
+        return view('homepage',['books' => $books]);
     }
 
     function login_post(Request $request){
@@ -38,7 +41,10 @@ class web_controller extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-                return redirect()->route('homepage')->with('success', 'Login successful');
+            if (Auth::user()->user_type == 'admin') {
+                return redirect()->route('admin.dashboard')->with('success', 'Login successful');
+            }
+            return redirect()->route('homepage')->with('success', 'Login successful');
         }
         return redirect()->route('login')->with(['error' => 'Invalid email or password']);
     }
@@ -54,27 +60,20 @@ class web_controller extends Controller
             'gender' => 'required',
             'address' => 'required',
             'phone_number' => 'required'
-            ]);
-
-        $data['username'] = $request->username;
-        $data['email'] = $request->email;
-        $data['password'] = Hash::make($request->password);
-        $data['birthday'] = $request->birthday;
-        $data['gender'] = $request ->gender;
-        $data['address'] = $request->address;
-        $data['phone_number'] = $request->phone_number;
-
-        $user = users_table::create([
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'password' => $data['password'],
-            'age' => 18,
-            'birthday' => $data['birthday'],
-            'gender' => $data['gender'],
-            'address' => $data['address'],
-            'user_type' => 'user',
-            'phone_number' => $data['phone_number']
         ]);
+        
+        $user = users_table::create([
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'age' => 18,
+            'birthday' => $request->birthday,
+            'gender' => $request->gender,
+            'address' => $request->address,
+            'user_type' => 'user',
+            'phone_number' => $request->phone_number
+        ]);
+        
 
         if ($user) {
             $credentials = [
@@ -93,8 +92,10 @@ class web_controller extends Controller
     }
     
 
-    function view_books() {
-        return view('view_book');
+    function view_books($id) {
+
+        $book = books_table::find($id);
+        return view('view_book', ['book' => $book]);
     }
 
     function services() {
