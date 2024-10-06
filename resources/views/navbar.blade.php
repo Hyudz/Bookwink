@@ -28,6 +28,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('about_us')}}">ABOUT US</a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('bookmark')}}">BOOKMARKS</a>
+                    </li>
                 </ul>
 
                 <form class="d-flex" role="search">

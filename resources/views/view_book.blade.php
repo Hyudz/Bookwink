@@ -21,7 +21,19 @@
                 <h5>{{$book->title}}</h5>
                 <div class="container-fluid">
                     <a href="#" class="btn btn-primary">Reserve Book</a>
-                    <a href="#" class="btn btn-secondary"><i class="fa-solid fa-bookmark"></i></a>
+
+                    @if($isBookmarked)
+                    <form action="{{route('remove_bookmark',$book->id)}}" method="POST">
+                        @method('DELETE')
+                        @csrf
+                        <button type="submit" class="btn btn-danger"><i class="fa-solid fa-bookmark"></i></button>
+                    </form>
+                    @else
+                    <form action="{{route('add_bookmark',$book->id)}}" method="post">
+                        @csrf
+                        <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-bookmark"></i></button>
+                    </form>
+                    @endif
                 </div>
             </div>
             <p>Author: {{$book->author}}</p>

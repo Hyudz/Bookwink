@@ -27,6 +27,9 @@ Route::get('/forgot_password', [web_controller::class,'forgot_password']) -> nam
 Route::post('/signup', [web_controller::class,'signup_post']) -> name('signup_post');
 Route::put('/update_profile/{id}', [web_controller::class,'update_profile']) -> name('update_profile');
 Route::delete('/delete_profile/{id}', [web_controller::class,'delete_profile']) -> name('delete_profile');
+Route::get('/bookmarks', [web_controller::class,'bookmark']) -> name('bookmark');
+Route::post('/add_bookmark/{id}', [web_controller::class,'bookmarks']) -> name('add_bookmark');
+Route::delete('/remove_bookmark/{id}', [web_controller::class,'remove_bookmark']) -> name('remove_bookmark');
 
 
 // admin
