@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\bookmarks;
 use App\Models\books_table;
+use App\Models\rrs_table;
 
 class web_controller extends Controller
 {
@@ -22,6 +23,12 @@ class web_controller extends Controller
     function login() {
         //REDIRECTS TO THE LOGIN PAGE
         return view('login');
+    }
+
+    function logout() {
+        //LOGOUT THE USER AND REDIRECT TO THE LANDING PAGE
+        Auth::logout();
+        return redirect()->route('login');
     }
 
     function signup() {
@@ -118,7 +125,19 @@ class web_controller extends Controller
         
         $isBookmarked = $bookIds->contains($id);
 
-        return view('view_book', ['book' => $book, 'isBookmarked' => $isBookmarked]);
+        //eto naman para ma-retrieve yung reviews and ratings ng book
+        $reviews = rrs_table::where('book_id', $id)->get();
+        $userIds = $reviews->pluck('user_id');
+        $usernames = users_table::whereIn('id', $userIds)->pluck('username', 'id');
+
+        foreach ($reviews as $review) {
+            $review->username = $usernames[$review->user_id];
+        }
+
+        $reviewed = rrs_table::where('user_id', Auth::user()->id)->get();
+        $reviewIds = $reviewed->pluck('book_id');
+        $isReviewed = $reviewIds->contains($id);
+        return view('view_book', ['book' => $book, 'isBookmarked' => $isBookmarked, 'reviews' => $reviews, 'isReviewed' => $isReviewed]);
     }
 
     function services() {
@@ -139,6 +158,7 @@ class web_controller extends Controller
     function forgot_password() {
         return view('forgot');
     }
+
     function update_profile(Request $request, $id){
 
         //VALIDATES THE REQUEST
@@ -179,8 +199,7 @@ class web_controller extends Controller
 
     function bookmarks($id) {
 
-        //SELECT * FROM BOOKMARKS_TABLE WHERE USER_ID = $id
-        // QUERY THE BOOKMARKS OF THE USER
+        //this is to add a bookmark to the user
         $book = books_table::find($id);
 
         bookmarks::create([
@@ -188,10 +207,28 @@ class web_controller extends Controller
             'book_id' => $id
         ]);
 
+        $bookmarked = bookmarks::where('user_id', Auth::user()->id)->get();
+        $bookIds = $bookmarked->pluck('book_id');
+        $isBookmarked = $bookIds->contains($id);
+
+        $reviews = rrs_table::where('book_id', $id)->get();
+        $userIds = $reviews->pluck('user_id');
+
+        $usernames = users_table::whereIn('id', $userIds)->pluck('username', 'id');
+
+        foreach ($reviews as $review) {
+            $review->username = $usernames[$review->user_id] ?? 'Unknown';
+        }
+
+        $reviewed = rrs_table::where('user_id', Auth::user()->id)->get();
+        $reviewIds = $reviewed->pluck('book_id');
+        $isReviewed = $reviewIds->contains($id);
+
         //SELECT * FROM BOOKS_TABLE WHERE ID = $id
         // SELECT THE BOOK FROM THE DB WITH ITS ID AND RETURN IT WITH THE VIEW
-        $book = books_table::find($id);
-        return view('view_book', ['book' => $book]);
+
+        //PARANG SAME FUNCTION LANG DIN KAY VIEW BOOK PERO ITO YUNG FUNCTION PARA SA BOOKMARKS
+        return view('view_book', ['book' => $book, 'isBookmarked' => $isBookmarked,  'reviews' => $reviews, 'isReviewed' => $isReviewed]);
     }
 
     function bookmark() { 
@@ -213,5 +250,69 @@ class web_controller extends Controller
         //REDIRECT TO THE BOOKMARKS PAGE WITH SUCCESS MESSAGE
         return redirect()->route('bookmark')->with('success', 'Bookmark removed successfully');
     }
+
+    //THE FOLLOWING FUNCTIONS ARE FOR THE FUNCTIONALITY OF RATINGS AND REVIEWS FOR THE BOOK
+
+    function add_review(Request $request){
+
+        $request->validate([
+            'review' => 'required',
+            'rating' => 'required',
+        ]);
+
+        rrs_table::create([
+            'user_id' => Auth::user()->id,
+            'book_id' => $request->book_id,
+            'review' => $request->review,
+            'rating' => $request->rating,
+        ]);
+
+        $bookmarked = bookmarks::where('user_id', Auth::user()->id)->get();
+        $bookIds = $bookmarked->pluck('book_id');
+        $isBookmarked = $bookIds->contains($request->book_id);
+
+        $reviews = rrs_table::where('book_id')->get();
+        $userIds = $reviews->pluck('user_id');
+
+        $usernames = users_table::whereIn('id', $userIds)->pluck('username', 'id');
+
+        foreach ($reviews as $review) {
+            $review->username = $usernames[$review->user_id] ?? 'Unknown';
+        }
+
+        $reviewed = rrs_table::where('user_id', Auth::user()->id)->get();
+        $reviewIds = $reviewed->pluck('book_id');
+        $isReviewed = $reviewIds->contains($request->book_id);
+
+        return redirect()->route('view_books', ['id' => $request->book_id, 'isBookmarked' => $isBookmarked, 'isReviewed' => $isReviewed ])->with('success', 'Review added successfully');
+
+    }
+
+    function update_review(Request $request, $id){
+
+        $request->validate([
+            'review' => 'required',
+            'rating' => 'required',
+        ]);
+
+        $review = rrs_table::find($request->id);
+        $review->update([
+            'review' => $request->review,
+            'rating' => $request->rating,
+        ]);
+
+        return redirect()->route('view_books', ['id' => $review->book_id])->with('success', 'Review updated successfully');
+
+    }
+
+    function delete_review($id){
+
+        $review = rrs_table::find($id);
+        $review->delete();
+
+        return redirect()->route('view_books', ['id' => $review->book_id])->with('success', 'Review deleted successfully');
+
+    }
+
     
 }

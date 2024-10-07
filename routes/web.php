@@ -19,6 +19,7 @@ Route::get('/', [web_controller::class,'login']) -> name('login');
 Route::get('/signup', [web_controller::class,'signup']) -> name('signup');
 Route::post('/home', [web_controller::class,'login_post']) -> name('login_post');
 Route::get('/homepage', [web_controller::class,'homepage']) -> name('homepage');
+Route::get('/logout', [web_controller::class,'logout']) -> name('logout');
 Route::get('/view_books/{id}', [web_controller::class,'view_books']) -> name('view_books');
 Route::get('/services', [web_controller::class,'services']) -> name('services');
 Route::get('/about_us', [web_controller::class,'about_us']) -> name('about_us');
@@ -30,6 +31,9 @@ Route::delete('/delete_profile/{id}', [web_controller::class,'delete_profile']) 
 Route::get('/bookmarks', [web_controller::class,'bookmark']) -> name('bookmark');
 Route::post('/add_bookmark/{id}', [web_controller::class,'bookmarks']) -> name('add_bookmark');
 Route::delete('/remove_bookmark/{id}', [web_controller::class,'remove_bookmark']) -> name('remove_bookmark');
+Route::post('/add_review',[web_controller::class,'add_review'])->name('add_rrs');
+Route::put('/update_review/{id}',[web_controller::class,'update_review'])->name('update_rrs');
+Route::delete('/delete_review/{id}',[web_controller::class,'delete_review'])->name('delete_rrs');
 
 
 // admin

@@ -9,7 +9,7 @@ class rrs_table extends Model
 {
     use HasFactory;
 
-    protected $table = 'rrs_table';
+    protected $table = 'rrs_tables';
 
     protected $fillable = [
         'id',

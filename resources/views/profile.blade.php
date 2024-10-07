@@ -18,7 +18,7 @@
             <div class=" d-flex flex-column">
                 <h1>Profile Page</h1>
 
-                <a href="{{route('login')}}" type="button" class="btn btn-primary">Logout</a>
+                <a href="{{route('logout')}}" type="button" class="btn btn-primary">Logout</a>
             </div>
 
             <div class="ms-5 d-flex flex-column">
