@@ -21,8 +21,26 @@
             <div class="d-flex justify-content-between">
                 <h5>{{$book->title}}</h5>
                 <div class="container-fluid">
-                    <a href="#" class="btn btn-primary">Reserve Book</a>
-
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveModal">Reserve Book</button>
+                    <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reservModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="reservModalLabel">Reserve {{$book->title}}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                By reserving this book, you agree to the terms and conditions of the library. You will be notified once the book is available for pickup.
+                            </div>
+                            <div class="modal-footer">
+                                <form action="{{route('reserve_book',$book->id)}}" method="post">
+                                    @csrf
+                                    <button type="submit" class="btn btn-primary">Reserve</button>
+                                </form>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
                     @if($isBookmarked)
                     <form action="{{route('remove_bookmark',$book->id)}}" method="POST">
                         @method('DELETE')

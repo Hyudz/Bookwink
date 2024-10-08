@@ -33,6 +33,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('admin.add_books')}}"><i class="fa-solid fa-plus"></i></a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('admin.reserved_books')}}"><i class="fa-solid fa-users"></i></a>
+                    </li>
                 </ul>
 
                 <form class="d-flex" role="search">

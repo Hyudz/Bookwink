@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\bookmarks;
+use Illuminate\Support\Facades\DB;
 use App\Models\books_table;
+use App\Models\borrows_table;
 use App\Models\rrs_table;
 
 class web_controller extends Controller
@@ -41,7 +43,7 @@ class web_controller extends Controller
 
         //SELECTS ALL THE BOOKS FROM THE DATABASE AND RETURNS IT WITH THE VIEW
 
-        $books = books_table::all();
+        $books = books_table::all()->where('status', 'available');
         return view('homepage',['books' => $books]);
     }
 
@@ -260,6 +262,8 @@ class web_controller extends Controller
             'rating' => 'required',
         ]);
 
+        //SQL CODE: INSERT INTO RRS_TABLE VALUES ('user_id', 'book_id', 'review', 'rating')
+
         rrs_table::create([
             'user_id' => Auth::user()->id,
             'book_id' => $request->book_id,
@@ -295,6 +299,8 @@ class web_controller extends Controller
             'rating' => 'required',
         ]);
 
+        //SQL CODE: UPDATE RRS_TABLE SET REVIEW = $request->review, RATING = $request->rating WHERE ID = $id
+
         $review = rrs_table::find($request->id);
         $review->update([
             'review' => $request->review,
@@ -307,10 +313,95 @@ class web_controller extends Controller
 
     function delete_review($id){
 
+        //SQL CODE: DELETE FROM RRS_TABLE WHERE ID = $id
+
         $review = rrs_table::find($id);
         $review->delete();
 
         return redirect()->route('view_books', ['id' => $review->book_id])->with('success', 'Review deleted successfully');
+
+    }
+
+    function request_reserve($id) {
+
+    //ETO YUNG MAG NO NOTIFY KAY ADMIN IF MAY NAG REQUEST NG RESERVATION
+    //SQL CODE: INSERT INTO BORROWS_TABLE VALUES ('user_id', 'book_id', 'status', 'borrow_date', 'return_date')
+    borrows_table::create([
+        'user_id' => Auth::user()->id,
+        'book_id' => $id,
+        'status' => 'pending',
+        'borrow_date' => date('Y-m-d'),
+        'return_date' => date('Y-m-d', strtotime('+7 days')),
+    ]);
+
+    return redirect()->route('homepage')->with('success', 'Reservation requested successfully');
+
+    }
+
+    function cancel_reservation($id) {  
+
+        //USER CANCELS THE RESERVATION
+
+        //SQL CODE: UPDATE BORROWS_TABLE SET STATUS = 'cancelled' WHERE ID = $id
+
+        $borrow_status = borrows_table::findorFail($id);
+        $borrow_status-> status = 'cancelled';
+        $borrow_status->save();
+
+        //SQL CODE: UPDATE BOOKS_TABLE SET STATUS = 'available' WHERE ID = $borrow_status->book_id
+
+        $book = books_table::find($borrow_status->book_id);
+        $book->status = 'available';
+        $book->save();
+
+        return redirect()->route('homepage')->with('success', 'Reservation cancelled successfully');
+
+    }
+
+    function pickup($id) {
+
+        //ETO NAMAN PAG NAKUHA NA NI CLIENT YUNG BOOK
+
+        //SQL CODE: UPDATE BORROWS_TABLE SET STATUS = 'borrowed' WHERE ID = $id
+
+        $borrow_status = borrows_table::findorFail($id);
+        $borrow_status-> status = 'borrowed';
+        $borrow_status->save();
+
+        return redirect()->route('homepage')->with('success', 'Book picked up successfully');
+
+    }
+
+    function return_book($id) {
+
+    //ETO YUNG MAG NONOTIFY SI ADMIN IF NIRETURN NA NI CLIENT YUNG BOOK TAS SI ADMIN NA BAHALA MAG APPROVE
+
+    //SQL CODE: UPDATE BORROWS_TABLE SET STATUS = 'request return' WHERE ID = $id
+    $borrow_status = borrows_table::findorFail($id);
+    $borrow_status-> status = 'request return';
+    $borrow_status->save();
+
+    return redirect()->route('homepage')->with('success', 'Book returned successfully');
+
+    }
+
+    function my_borrows() {
+
+        //SELECTS ALL THE BORROWED BOOKS OF THE USER AND RETURNS IT WITH THE VIEW
+
+        //SQL CODE:
+        // SELECT borrows_table.*, books_tables.title, users_tables.username 
+        // FROM borrows_table
+        // INNER JOIN books_tables ON borrows_table.book_id = books_tables.id
+        // INNER JOIN users_tables ON borrows_table.user_id = users_tables.id;
+
+        $borrowedBooks = DB::table('borrows_table')
+        ->join('books_tables', 'borrows_table.book_id', '=', 'books_tables.id')
+        ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
+        ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
+        ->get();
+
+        return view('my_borrows', ['borrowedBooks' => $borrowedBooks]);
 
     }
 

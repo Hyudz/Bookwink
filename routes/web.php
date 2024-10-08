@@ -34,6 +34,15 @@ Route::delete('/remove_bookmark/{id}', [web_controller::class,'remove_bookmark']
 Route::post('/add_review',[web_controller::class,'add_review'])->name('add_rrs');
 Route::put('/update_review/{id}',[web_controller::class,'update_review'])->name('update_rrs');
 Route::delete('/delete_review/{id}',[web_controller::class,'delete_review'])->name('delete_rrs');
+Route::post('/reserve_book/{id}',[web_controller::class,'request_reserve'])->name('reserve_book');
+Route::delete('/cancel_reservation/{id}',[web_controller::class,'cancel_reservation'])->name('cancel_reservation');
+Route::put('/return_book/{id}',[web_controller::class,'return_book'])->name('return_book');
+Route::get('/my_borrows', [web_controller::class,'my_borrows']) -> name('my_borrows');
+Route::post('/search', [web_controller::class,'search']) -> name('search');
+Route::get('/search_results', [web_controller::class,'search_results']) -> name('search_results');
+Route::post('/pickup/{id}', [web_controller::class,'pickup']) -> name('pickup');
+Route::post('/cancel/{id}', [web_controller::class,'cancel_reservation']) -> name('cancel');
+Route::post('/return/{id}', [web_controller::class,'return_book']) -> name('return');
 
 
 // admin
@@ -45,3 +54,8 @@ Route::get('/admin/manage_books', [admin_controller::class,'manage_books']) -> n
 Route::get('/admin/edit_book/{id}', [admin_controller::class,'edit_book']) -> name('admin.edit_book');
 Route::post('/admin/edit_book/{id}', [admin_controller::class,'edit_book_post']) -> name('admin.edit_book_post');
 Route::delete('/admin/delete_book/{id}', [admin_controller::class,'delete_book']) -> name('admin.delete_book');
+Route::post('/admin/approve_reservation/{id}', [admin_controller::class,'approve_request']) -> name('admin.approve_reservation');
+Route::post('/admin/approve_return/{id}', [admin_controller::class,'approve_return']) -> name('admin.approve_return');
+Route::post('/admin/reject_return/{id}', [admin_controller::class,'reject_return']) -> name('admin.reject_return');
+Route::post('/admin/reject_reservation/{id}', [admin_controller::class,'disapprove_request']) -> name('admin.reject_reservation');
+Route::get('/admin/reserved_books', [admin_controller::class,'reserved_books']) -> name('admin.reserved_books');

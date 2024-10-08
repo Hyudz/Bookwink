@@ -32,6 +32,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('bookmark')}}">BOOKMARKS</a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('my_borrows')}}">ARCHIVE</a>
+                    </li>
                 </ul>
 
                 <form class="d-flex" role="search">
