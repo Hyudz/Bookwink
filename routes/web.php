@@ -15,7 +15,8 @@ use App\Http\Controllers\admin\admin_controller;
 |
 */
 
-Route::get('/', [web_controller::class,'login']) -> name('login');
+Route::get('/', [web_controller::class,'index']) -> name('index');
+Route::get('/login', [web_controller::class,'login']) -> name('login');
 Route::get('/signup', [web_controller::class,'signup']) -> name('signup');
 Route::post('/home', [web_controller::class,'login_post']) -> name('login_post');
 Route::get('/homepage', [web_controller::class,'homepage']) -> name('homepage');

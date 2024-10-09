@@ -1,0 +1,160 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Baskerville', serif;
+    background-image: url('../img/photo2.avif');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #333;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #736e67;
+    padding: 20px;
+}
+
+header .logo h1 {
+    font-family: 'Baskerville', serif;
+    color: #f8f5f2;
+    font-size: 28px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: #f8f5f2;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #d2b48c;
+}
+
+.hero {
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none;
+}
+
+.hero-text {
+    background-color: rgba(247, 244, 240, 0.8);
+    color: #333;
+    padding: 50px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.hero-text h2 {
+    font-family: 'Baskerville', serif;
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.hero-text p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.hero-text .btn {
+    background-color: #a58b6f;
+    color: #f8f5f2;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.hero-text .btn:hover {
+    background-color: #8b7157;
+}
+
+.about-service, .about-history {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    background-color: #f2eaea;
+    color: #4a4a4a;
+    border-radius: 20px; /* Changed to match the footer */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 70px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.about-history {
+    flex-direction: row-reverse; 
+}
+
+.container {
+    flex: 1;
+    text-align: left;
+}
+
+.about-service h2, .about-history h2 {
+    font-family: 'Baskerville', serif;
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.about-service p, .about-history p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #666;
+}
+
+footer {
+    background-color: #736e67;
+    color: #f8f5f2;
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+}
+
+footer a {
+    color: #d2b48c;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s forwards;
+}

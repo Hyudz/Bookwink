@@ -44,7 +44,7 @@ class admin_controller extends Controller
             'rating' => 0,
         ]);
     
-        return redirect()->route('admin.add_books')->with('success', 'Book added successfully');
+        return redirect()->route('admin.manage_books')->with('success', 'Book added successfully');
     }
     
 

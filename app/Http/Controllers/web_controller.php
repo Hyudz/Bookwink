@@ -17,9 +17,9 @@ class web_controller extends Controller
 {
 
     //THIS CONTROLLER IS FOR THE CLIENT SIDE OF THE APPLICATION
-    function landing() {
+    function index() {
         //REDIRECTS TO THE LANDING PAGE
-        return view('welcome');
+        return view('index');
     }
 
     function login() {
