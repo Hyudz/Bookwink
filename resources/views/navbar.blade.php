@@ -27,7 +27,7 @@
                     </a>    
                     <ul class="dropdown-menu dropdown-menu-end " aria-labelledby="navbarDropdownMenuLink">
                         <li><a class="dropdown-item" href="#">My Profile</a></li>
-                        <li><a class="dropdown-item" href="#">Bookmarks</a></li>
+                        <li><a class="dropdown-item" href="{{route('bookmark')}}">Bookmarks</a></li>
                         <li><a class="dropdown-item" href="#">Archive</a></li>
                         <li><a class="dropdown-item" href="{{route('logout')}}">Logout</a></li>
                     </ul>
