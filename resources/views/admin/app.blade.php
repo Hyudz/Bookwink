@@ -56,7 +56,7 @@
 
                 <!-- Brand -->
                 <a class="navbar-brand" href="#">
-                    <p> LOGO </p>
+                    <img src="{{asset('img/logogo.png')}}" alt="logo" height="40" class="d-inline-block align-text-top">
                 </a>
 
                 <!-- Search form -->

@@ -155,6 +155,8 @@ class web_controller extends Controller
 
         //NAVIGATES TO THE PROFILE PAGE OF THE USER WITH ITS OWN DETAILS
         $user_details = Auth::user();
+
+        
         return view('profile', ['user_details' => $user_details]);
     }
 
@@ -241,7 +243,9 @@ class web_controller extends Controller
         $bookIds = $bookmarked->pluck('book_id');
         $books = books_table::whereIn('id', $bookIds)->get();
 
-        return view('bookmarks', ['books' => $books]);
+        $user_details = Auth::user();
+
+        return view('bookmarks', ['books' => $books, 'user_details' => $user_details]);
     }
 
     function remove_bookmark($id) {
@@ -272,6 +276,24 @@ class web_controller extends Controller
             'rating' => $request->rating,
         ]);
 
+        //COUNTS THE NUMBER OF USERS WHO RATED THE BOOK
+        //SQL CODE: SELECT COUNT(*) FROM RRS_TABLE WHERE BOOK_ID = $request->book_id
+        $usersRated = rrs_table::where('book_id', $request->book_id)->get()->count();
+
+        //SUMS ALL THE RATINGS OF THE BOOK
+        //SQL CODE: SELECT SUM(RATING) FROM RRS_TABLE WHERE BOOK_ID = $request->book_id
+        $sumRatings = rrs_table::where('book_id', $request->book_id)->sum('rating');
+
+        //COMPUTES THE AVERAGE RATING OF THE BOOK
+        $averageRating = $sumRatings / $usersRated;
+
+        //UPDATES THE AVERAGE RATING OF THE BOOK
+        //SQL CODE: UPDATE BOOKS_TABLE SET RATING = $averageRating WHERE ID = $request->book_id
+        $book = books_table::find($request->book_id);
+        $book->update([
+            'rating' => $averageRating,
+        ]);
+
         $bookmarked = bookmarks::where('user_id', Auth::user()->id)->get();
         $bookIds = $bookmarked->pluck('book_id');
         $isBookmarked = $bookIds->contains($request->book_id);
@@ -299,29 +321,61 @@ class web_controller extends Controller
             'review' => 'required',
             'rating' => 'required',
         ]);
-
-        //SQL CODE: UPDATE RRS_TABLE SET REVIEW = $request->review, RATING = $request->rating WHERE ID = $id
-
-        $review = rrs_table::find($request->id);
+    
+        // FIND THE REVIEW USING THE ID PASSED
+        $review = rrs_table::find($id);
+    
         $review->update([
             'review' => $request->review,
             'rating' => $request->rating,
         ]);
-
-        return redirect()->route('view_books', ['id' => $review->book_id])->with('success', 'Review updated successfully');
-
+    
+        $book_id = $review->book_id;
+        // COUNT THE NUMBER OF USERS WHO RATED THE BOOK
+        $usersRated = rrs_table::where('book_id', $book_id)->count();
+    
+        // SUM ALL THE RATINGS OF THE BOOK
+        $sumRatings = rrs_table::where('book_id', $book_id)->sum('rating');
+    
+        $averageRating = $usersRated > 0 ? $sumRatings / $usersRated : 0;
+        $book = books_table::find($book_id);
+        $book->update([
+            'rating' => $averageRating,
+        ]);
+    
+        return redirect()->route('view_books', ['id' => $book_id])->with('success', 'Review updated successfully');
     }
+    
 
     function delete_review($id){
 
-        //SQL CODE: DELETE FROM RRS_TABLE WHERE ID = $id
-
+        // Find the review by its ID
         $review = rrs_table::find($id);
+    
+        // Store the book_id before deleting the review
+        $book_id = $review->book_id;
+    
+        // Delete the review
         $review->delete();
-
-        return redirect()->route('view_books', ['id' => $review->book_id])->with('success', 'Review deleted successfully');
-
+    
+        // Count the number of users who rated the book
+        $usersRated = rrs_table::where('book_id', $book_id)->count();
+    
+        // Sum all the ratings of the book
+        $sumRatings = rrs_table::where('book_id', $book_id)->sum('rating');
+    
+        // Compute the average rating of the book, ensuring no division by zero
+        $averageRating = $usersRated > 0 ? $sumRatings / $usersRated : 0;
+    
+        // Update the average rating of the book
+        $book = books_table::find($book_id);
+        $book->update([
+            'rating' => $averageRating,
+        ]);
+    
+        return redirect()->route('view_books', ['id' => $book_id])->with('success', 'Review deleted successfully');
     }
+    
 
     function request_reserve($id) {
 
@@ -402,7 +456,9 @@ class web_controller extends Controller
         ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
         ->get();
 
-        return view('my_borrows', ['borrowedBooks' => $borrowedBooks]);
+        $user_details = Auth::user();
+
+        return view('my_borrows', ['borrowedBooks' => $borrowedBooks, 'user_details' => $user_details]);
 
     }
 

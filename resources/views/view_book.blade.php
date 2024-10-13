@@ -47,91 +47,95 @@
             </div>
             <div class="d-flex">
                 <p>Author: {{$book->author}}</p>
-                <p class="ms-3">Rating: {{$book->rating}}</p>
+                <p class="ms-3">Average Rating: {{$book->rating}}</p>
             </div>
             <p>Summary: {{$book -> description}}</p>
         </div>
 
         <div class="container mt-5">
-            @if (!$isReviewed)
-            <div class="container mb-3">
-                <h6>Your Review</h6>
-                <form action="{{ route('add_rrs') }}" method="post">
-                    @csrf
-                    <input type="hidden" name="book_id" value="{{ $book->id }}">
-                    <div class="form-group">
-                        <label for="rating">Rating</label>
-                        <div class="star-rating">
-                            <input type="radio" name="rating" id="star5" value="5" required><label for="star5">&#9733;</label>
-                            <input type="radio" name="rating" id="star4" value="4"><label for="star4">&#9733;</label>
-                            <input type="radio" name="rating" id="star3" value="3"><label for="star3">&#9733;</label>
-                            <input type="radio" name="rating" id="star2" value="2"><label for="star2">&#9733;</label>
-                            <input type="radio" name="rating" id="star1" value="1"><label for="star1">&#9733;</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="review">Review</label>
-                        <textarea name="review" class="form-control" id="review" rows="3" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-                @foreach($reviews as $review)
-                <div class="container mb-3">
-                    <h6>Reviews</h6>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <p>Rating: {{$review->rating}}</p>
-                            <p>Review: {{$review->review}}</p>
-                        </div>
-                    </div>
+    @if (!$isReviewed)
+    <div class="container mb-3">
+        <h6>Your Review</h6>
+        <form action="{{ route('add_rrs') }}" method="post">
+            @csrf
+            <input type="hidden" name="book_id" value="{{ $book->id }}">
+            <div class="form-group">
+                <label for="rating">Rating</label>
+                <div class="star-rating">
+                    <input type="radio" name="rating" id="star5" value="5" required><label for="star5">&#9733;</label>
+                    <input type="radio" name="rating" id="star4" value="4"><label for="star4">&#9733;</label>
+                    <input type="radio" name="rating" id="star3" value="3"><label for="star3">&#9733;</label>
+                    <input type="radio" name="rating" id="star2" value="2"><label for="star2">&#9733;</label>
+                    <input type="radio" name="rating" id="star1" value="1"><label for="star1">&#9733;</label>
                 </div>
-            @endforeach
             </div>
-            @else
-
-            @foreach($reviews as $review)
-                <div class="container mb-3">
-                    <h6>Your Review</h6>
-                    <form action="{{ route('update_rrs', $review->id) }}" method="post">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="rr_id" value="{{ $review->id }}">
-                        <div class="form-group">
-                            <label for="rating">Rating</label>
-                            <div class="star-rating">
-                                <input type="radio" name="rating" id="star5-{{ $review->id }}" value="5" {{ $review->rating == 5 ? 'checked' : '' }} required><label for="star5-{{ $review->id }}">&starf;</label>
-                                <input type="radio" name="rating" id="star4-{{ $review->id }}" value="4" {{ $review->rating == 4 ? 'checked' : '' }}><label for="star4-{{ $review->id }}">&starf;</label>
-                                <input type="radio" name="rating" id="star3-{{ $review->id }}" value="3" {{ $review->rating == 3 ? 'checked' : '' }}><label for="star3-{{ $review->id }}">&starf;</label>
-                                <input type="radio" name="rating" id="star2-{{ $review->id }}" value="2" {{ $review->rating == 2 ? 'checked' : '' }}><label for="star2-{{ $review->id }}">&starf;</label>
-                                <input type="radio" name="rating" id="star1-{{ $review->id }}" value="1" {{ $review->rating == 1 ? 'checked' : '' }}><label for="star1-{{ $review->id }}">&starf;</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="review-{{ $review->id }}">Review</label>
-                            <textarea name="review" class="form-control" id="review-{{ $review->id }}" rows="3" required>{{ $review->review }}</textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    </form>
-                    <form action="{{ route('delete_rrs', $review->id) }}" method="post">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
+            <div class="form-group">
+                <label for="review">Review</label>
+                <textarea name="review" class="form-control" id="review" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <h6>Reviews</h6>
+        @foreach($reviews as $review)
+        <div class="container mb-3">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <p>Rating: {{$review->rating}}</p>
+                    <p>Review: {{$review->review}}</p>
                 </div>
-                <div class="container mb-3">
-                    <h6>Reviews</h6>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            @if(!$review->user_id == Auth::user()->id)
-                            <p>Rating: {{$review->rating}}</p>
-                            <p>Review: {{$review->review}}</p>
-                            @endif
-                        </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+    @else
+
+    <div class="container mb-3">
+        @foreach($reviews as $review)
+        @if($review->user_id == Auth::user()->id)
+            <h6>Your Review</h6>
+            <form action="{{ route('update_rrs', $review->id) }}" method="post">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="rr_id" value="{{ $review->id }}">
+                <div class="form-group">
+                    <label for="rating">Rating</label>
+                    <div class="star-rating">
+                        <input type="radio" name="rating" id="star5-{{ $review->id }}" value="5" {{ $review->rating == 5 ? 'checked' : '' }} required><label for="star5-{{ $review->id }}">&starf;</label>
+                        <input type="radio" name="rating" id="star4-{{ $review->id }}" value="4" {{ $review->rating == 4 ? 'checked' : '' }}><label for="star4-{{ $review->id }}">&starf;</label>
+                        <input type="radio" name="rating" id="star3-{{ $review->id }}" value="3" {{ $review->rating == 3 ? 'checked' : '' }}><label for="star3-{{ $review->id }}">&starf;</label>
+                        <input type="radio" name="rating" id="star2-{{ $review->id }}" value="2" {{ $review->rating == 2 ? 'checked' : '' }}><label for="star2-{{ $review->id }}">&starf;</label>
+                        <input type="radio" name="rating" id="star1-{{ $review->id }}" value="1" {{ $review->rating == 1 ? 'checked' : '' }}><label for="star1-{{ $review->id }}">&starf;</label>
                     </div>
                 </div>
-                @endforeach
+                <div class="form-group">
+                    <label for="review-{{ $review->id }}">Review</label>
+                    <textarea name="review" class="form-control" id="review-{{ $review->id }}" rows="3" required>{{ $review->review }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+            <form action="{{ route('delete_rrs', $review->id) }}" method="post">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        @endif
+        @endforeach
+    </div>
+    @foreach($reviews as $review)
+        <div class="container mb-3">
+            @if($review->user_id != Auth::user()->id)
+            <!-- For other users' reviews, display as static content -->
+            <div>
+                <p>By: {{$review->user->username}}</p>
+                <p>Rating: {{$review->rating}}</p>
+                <p>Review: {{$review->review}}</p>
+            </div>
             @endif
         </div>
+    @endforeach
+    @endif
+</div>
+
 
     </div>
 </div>

@@ -1,6 +1,6 @@
-@extends('app')
+@extends('profile')
 @section('title', 'My Borrows')
-@section('content')
+@section('contents')
     <table class="table">
         <thead>
             <tr>

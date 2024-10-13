@@ -26,9 +26,7 @@
                         <i class="fa-solid fa-users rounded-circle" height="22"> </i>
                     </a>    
                     <ul class="dropdown-menu dropdown-menu-end " aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">My Profile</a></li>
-                        <li><a class="dropdown-item" href="{{route('bookmark')}}">Bookmarks</a></li>
-                        <li><a class="dropdown-item" href="#">Archive</a></li>
+                        <li><a class="dropdown-item" href="{{route('profile')}}">My Profile</a></li>
                         <li><a class="dropdown-item" href="{{route('logout')}}">Logout</a></li>
                     </ul>
                 </li>

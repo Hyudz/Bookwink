@@ -16,29 +16,6 @@
             </button>
             
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{route('admin.dashboard')}}"><i class="fa-solid fa-house"></i></a>
-                    </li>
-                
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('admin.manage_books')}}"><i class='fas fa-book-open'></i>
-                        </i></a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fa-solid fa-bell"></i></a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('admin.add_books')}}"><i class="fa-solid fa-plus"></i></a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('admin.reserved_books')}}"><i class="fa-solid fa-users"></i></a>
-                    </li>
-                </ul> -->
 
                 <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
