@@ -60,3 +60,4 @@ Route::post('/admin/approve_return/{id}', [admin_controller::class,'approve_retu
 Route::post('/admin/reject_return/{id}', [admin_controller::class,'reject_return']) -> name('admin.reject_return');
 Route::post('/admin/reject_reservation/{id}', [admin_controller::class,'disapprove_request']) -> name('admin.reject_reservation');
 Route::get('/admin/reserved_books', [admin_controller::class,'reserved_books']) -> name('admin.reserved_books');
+Route::get('/admin/export_data', [admin_controller::class,'export_data']) -> name('admin.export_data');

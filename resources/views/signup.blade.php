@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Sign Up</title>
+        <link href="{{asset('img/logogo.png')}}" rel="icon" type="image/x-icon">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     </head>
     <body class="d-flex flex-column min-vh-100">
@@ -37,24 +38,24 @@
                         @csrf
                         <div class="d-flex flex-row w-100">
                             <div class="form-floating mb-3">
-                                <input type="email" name="email" required class="form-control" id="floatingInput" placeholder="name@example.com">
+                                <input type="email" maxlength="254" minlength="5" name="email" required class="form-control" id="floatingInput" placeholder="name@example.com">
                                 <label for="floatingInput">Email:</label>
                             </div>
 
                             <div class="form-floating mb-3 ms-3">
-                                <input type="text" name="username" required class="form-control" id="floatingInput" placeholder="">
+                                <input type="text" name="username" maxlength="50" minlength="3" required class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">Username:</label>
                             </div>
                         </div>
 
                         <div class="d-flex flex-row w-100">
                             <div class="form-floating mb-3">
-                                <input type="password" name="password" required class="form-control" id="floatingPassword" placeholder="Password">
+                                <input type="password" name="password" required class="form-control" minlength="8" maxlength="16" id="floatingPassword" placeholder="Password">
                                 <label for="floatingPassword">Password</label>
                             </div>
 
                             <div class="form-floating mb-3 ms-3">
-                                <input type="password" name="password_confirmation" required class="form-control" id="floatingPassword" placeholder="Password">
+                                <input type="password" name="password_confirmation" required class="form-control" minlength="8" maxlength="16" id="floatingPassword" placeholder="Password">
                                 <label for="floatingPassword">Confirm Password</label>
                             </div>
                         </div>
@@ -77,7 +78,7 @@
 
                         <div class="d-flex flex-row w-100">
                             <div class="form-floating mb-3">
-                                <input type="text" name="address" required class="form-control" id="floatingInput" placeholder="">
+                                <input type="text" name="address" maxlength="255" minlength="10" required class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">Address:</label>
                             </div>
 
@@ -86,8 +87,8 @@
                             </div>
 
                             <div class="form-floating mb-3 ms-1">
-                                <input type="number" name="phone_number" required class="form-control" maxlength="10" id="floatingInput" placeholder="">
-                                <label for="floatingInput">Phone:</label>
+                            <input type="tel" name="phone_number" maxlength="10" class="form-control" pattern="^\[9][0-9]{2}\s?[0-9]{3}\s?[0-9]{4}$"id="floatingInput" placeholder="+63 912 345 6789">
+                            <label for="floatingInput">Phone:</label>
                             </div>
                         </div>
 

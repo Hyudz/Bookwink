@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('author');
             $table->string('category');
-            $table->string('description');
+            $table->text('description');
             $table->string('status');
             $table->string('cover');
             $table->integer('rating');

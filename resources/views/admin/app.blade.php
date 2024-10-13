@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>@yield('title', 'Dashboard')</title>
+        <link href="{{asset('img/logogo.png')}}" rel="icon" type="image/x-icon">
         <script src="https://kit.fontawesome.com/de52212229.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" type="text/css" href="{{ asset('css/dashboard.css') }}">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -33,86 +34,13 @@
                         <i class='fas fa-book-open me-3'></i><span>Manage Books</span>
                     </a>
                     <!-- Button trigger modal -->
-                    <a  class="list-group-item list-group-item-action py-2 ripple" data-bs-toggle="modal" data-bs-target="#add_book">
-                        <i class="fa-solid fa-plus me-3"></i><span>Add Book</span>
-                    </a>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="add_book" tabindex="-1" aria-labelledby="add_book_label" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="add_book_label">Add Book</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <form action="{{route('admin.add_books_post')}}" enctype="multipart/form-data" method="POST">
-                                        @csrf
-                                        <div class="row">
-                                            <!-- Book Cover -->
-                                            <div class="col-md-4 text-center">
-                                                <div class="bg-secondary text-white p-3">
-                                                    <h5>Book Cover</h5>
-                                                    <input type="file" required class="form-control" name="book_cover" id="floatingCover">
-                                                </div>
-                                            </div>
-
-                                            <!-- Book Details -->
-                                            <div class="col-md-8">
-                                                <div class="row">
-                                                    <!-- Book Title -->
-                                                    <div class="col-md-6">
-                                                        <div class="form-floating mb-3">
-                                                            <input required type="text" class="form-control" name="book_name" id="floatingTitle">
-                                                            <label for="floatingTitle">Book Title:</label>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Book Category -->
-                                                    <div class="col-md-6">
-                                                        <div class="form-floating mb-3">
-                                                            <select class="form-select" name="book_category" id="floatingCategory">
-                                                                <option selected>Category:</option>
-                                                                <option value="Fiction">Fiction</option>
-                                                                <option value="Sci-Fi">Science-Fiction</option>
-                                                                <option value="Science">Science</option>
-                                                                <option value="Romance">Romance</option>
-                                                                <option value="Mystery">Mystery</option>
-                                                            </select>
-                                                            <label for="floatingCategory">Category:</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Author -->
-                                                <div class="form-floating mb-3">
-                                                    <input type="text" required name="book_author" class="form-control" id="floatingAuthor">
-                                                    <label for="floatingAuthor">Author:</label>
-                                                </div>
-
-                                                <!-- Description -->
-                                                <div class="form-floating mb-3">
-                                                    <textarea class="form-control" required name="book_description" id="floatingDescription" style="height: 100px;"></textarea>
-                                                    <label for="floatingDescription">Description:</label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-primary">Add Book</button>
-                                        
-                                    </form>
-                                </div>
-
-                                <div class="modal-footer">
-                                            
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <a href="{{route('admin.reserved_books')}}" class="list-group-item list-group-item-action py-2 ripple">
                         <i class="fas fa-chart-line fa-fw me-3"></i><span>Reserved Books Approval</span>
+                    </a>
+
+                    <a href="{{route('admin.export_data')}}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fa-solid fa-file-export me-3"></i><span>Export Data</span>
                     </a>
                 </div>
             </div>
@@ -132,10 +60,10 @@
                 </a>
 
                 <!-- Search form -->
-                <form class="d-none d-md-flex input-group w-auto my-auto">
+                <!-- <form class="d-none d-md-flex input-group w-auto my-auto">
                     <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px;" />
                     <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
-                </form>
+                </form> -->
 
                 <!-- Right links -->
                 <ul class="navbar-nav ms-auto d-flex flex-row">

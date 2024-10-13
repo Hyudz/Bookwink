@@ -11,6 +11,8 @@
             @include('admin/navbar')
         </nav>
 
+        <!-- THIS FILE IS UNUSED AS IT IS MOVED IN A MODAL INSIDE THE MANAGE BOOKS FILE -->
+
         <div class="container mt-5">
             <h1 class="text-center">Add Book</h1>
 
@@ -45,7 +47,7 @@
             <div class=" container ms-5 me-5">
                     <div class="d-flex justify-content-between">
                         <div class="form-floating mb-3 flex-grow-1 me-2">
-                            <input type="text" class="form-control" name="book_name" id="floatingTitle">
+                            <input type="text" maxlength="10" class="form-control" name="book_name" id="floatingTitle">
                             <label for="floatingTitle">Book Title:</label>
                         </div>
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Models\books_table;
 use App\Models\borrows_table;
+use App\Models\users_table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,11 +13,11 @@ class admin_controller extends Controller
 {
     //THIS CONTROLLER IS FOR THE ADMIN SIDE OF THE APPLICATION
     function dashboard() {
-        return view('admin.dashboard');
-    }
 
-    function add_book() {
-        return view('admin.add_book');
+        $books = DB::table('books_tables')->get()->count();
+        $reserved_books = DB::table('borrows_table')->where('status', '!=', 'returned')->get()->count();
+        $users = DB::table('users_tables')->get();
+        return view('admin.dashboard', ['books' => $books, 'reserved_books' => $reserved_books, 'users' => $users]);
     }
 
     function add_book_post(Request $request) {
@@ -24,7 +25,7 @@ class admin_controller extends Controller
             'book_name' => 'required',
             'book_author' => 'required',
             'book_category' => 'required',
-            'book_description' => 'required',
+            'book_description' => 'required|max:65535',
             'book_cover' => 'required|image|mimes:jpg,jpeg,png|max:4096',
         ]);
 
@@ -63,7 +64,7 @@ class admin_controller extends Controller
             'book_name' => 'required',
             'book_author' => 'required',
             'book_category' => 'required',
-            'book_description' => 'required',
+            'book_description' => 'required|max:65535',
             'book_cover' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
         ]);
     
@@ -217,4 +218,108 @@ class admin_controller extends Controller
 
         return view('admin.reserved_books', ['borrowed_book' => $borrowed_book]);
     }
+
+    function export_data1(){
+        $fileName = 'bookwink.sql';
+    
+        // Construct the `mysqldump` command
+        $command = "mysqldump --u=root --p=bookwink > {$fileName}";
+    
+        // Execute the command
+        system($command);
+
+        // Provide the download to the user
+        return response()->download($fileName)->deleteFileAfterSend(true);
+    }
+
+    public function export_data()
+{
+    // Export books to CSV
+    $books = books_table::all();
+    $fileNameBooks = 'books_backup.csv';
+    $fileBooks = fopen($fileNameBooks, 'w');
+    fputcsv($fileBooks, ['ID', 'Title', 'Author', 'Category', 'Description', 'Status', 'Cover', 'Rating', 'Created At', 'Updated At']);
+
+    foreach ($books as $book) {
+        $data = [
+            $book->id,
+            $book->title,
+            $book->author,
+            $book->category,
+            $book->description,
+            $book->status,
+            $book->cover,
+            $book->rating,
+            $book->created_at,
+            $book->updated_at
+        ];
+        
+        fputcsv($fileBooks, $data);
+    }
+    fclose($fileBooks);
+
+    // Export users to CSV
+    $users = users_table::all();
+    $fileNameUsers = 'users_backup.csv';
+    $fileUsers = fopen($fileNameUsers, 'w');
+    fputcsv($fileUsers, ['ID', 'Username', 'Email', 'Password', 'Age', 'Birthday', 'Gender', 'Address', 'User Type', 'Phone Number', 'Created At', 'Updated At']);
+
+    foreach ($users as $user) {
+        $data = [
+            $user->id,
+            $user->username,
+            $user->email,
+            $user->password,
+            $user->age,
+            $user->birthday,
+            $user->gender,
+            $user->address,
+            $user->user_type,
+            $user->phone_number,
+            $user->created_at,
+            $user->updated_at
+        ];
+
+        fputcsv($fileUsers, $data);
+    }
+    fclose($fileUsers);
+
+    // Export borrows to CSV
+    $borrows = borrows_table::all();
+    $fileNameBorrows = 'borrows_backup.csv';
+    $fileBorrows = fopen($fileNameBorrows, 'w');
+    fputcsv($fileBorrows, ['ID', 'User ID', 'Book ID', 'Status', 'Created At', 'Updated At']);
+
+    foreach ($borrows as $borrow) {
+        $data = [
+            $borrow->id,
+            $borrow->user_id,
+            $borrow->book_id,
+            $borrow->status,
+            $borrow->created_at,
+            $borrow->updated_at
+        ];
+
+        fputcsv($fileBorrows, $data);
+    }
+    fclose($fileBorrows);
+
+    // Create a ZIP file containing all CSV files
+    $zipFileName = 'backup_files.zip';
+    $zip = new \ZipArchive();
+
+    if ($zip->open($zipFileName, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
+        $zip->addFile($fileNameBooks);
+        $zip->addFile($fileNameUsers);
+        $zip->addFile($fileNameBorrows);
+        $zip->close();
+    } else {
+        return response()->json(['error' => 'Could not create ZIP file.'], 500);
+    }
+
+    // Return the ZIP file as a download
+    return response()->download($zipFileName)->deleteFileAfterSend(true);
+}
+
+    
 }

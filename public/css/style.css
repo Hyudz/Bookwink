@@ -47,12 +47,27 @@ nav ul li a:hover {
     color: #d2b48c;
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s forwards;
+}
+
 .hero {
     height: 70vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: none;
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .hero-text {
@@ -80,27 +95,169 @@ nav ul li a:hover {
     padding: 15px 30px;
     text-decoration: none;
     border-radius: 5px;
-    font-size: 18px;
-    transition: background-color 0.3s;
+    font-size: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    transition: background-color 0.3s, transform 0.3s; 
 }
 
 .hero-text .btn:hover {
     background-color: #8b7157;
+    transform: scale(1.05);
+}
+
+.carousel-title {
+    text-align: center;
+    font-family: 'Baskerville', serif;
+    font-size: 36px; 
+    color: #f8f5f2; 
+    margin: 20px 0; 
+    padding: 10px; 
+    background-color: rgba(0, 0, 0, 0.6); 
+    border-radius: 10px; 
+    position: relative; 
+    top: -20px; 
+    z-index: 10; 
+}
+
+.carousel {
+    position: relative;
+    max-width: 1000px;
+    margin: 70px auto;
+    overflow: hidden;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-slide {
+    display: block; 
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    transform: translateX(20px); 
+}
+
+.carousel-slide.active {
+    opacity: 1; 
+    transform: translateX(0); /
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 300px; 
+    object-fit: cover; 
+    border-radius: 15px;
+}
+
+.carousel-slide img:hover {
+    transform: scale(1.05); 
+    transition: transform 0.3s;
+}
+
+.carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.6); 
+    color: #f8f5f2; 
+    border: none; 
+    padding: 15px 20px;
+    border-radius: 50%; 
+    cursor: pointer;
+    font-size: 24px;
+    transition: background-color 0.3s, transform 0.3s; 
+    z-index: 1;
+}
+
+.carousel-control:hover {
+    background-color: rgba(0, 0, 0, 0.8); 
+    transform: scale(1.1); 
+}
+
+.carousel-control.next {
+    right: 20px; 
+}
+
+.carousel-control.prev {
+    left: 20px; 
+}
+
+.carousel-control.next {
+    right: 10px;
+}
+
+.carousel-control:hover {
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 .about-service, .about-history {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 60px 40px;
+    padding: 80px 40px;
     background-color: #f2eaea;
     color: #4a4a4a;
-    border-radius: 20px; /* Changed to match the footer */
+    border-radius: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     margin-bottom: 70px;
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0, 0, 0, 0.8); 
+}
+
+.modal-content {
+    background-color: #fefefe; 
+    margin: 10% auto; 
+    padding: 20px;
+    border-radius: 10px; 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); 
+    width: 80%; 
+    max-width: 600px; 
+    text-align: center; 
+}
+
+#modalImage {
+    max-width: 100%; 
+    height: auto; 
+    border-radius: 10px; 
+}
+
+#modalDescription {
+    margin-top: 15px; 
+    font-size: 18px;
+    color: #333; 
+}
+
+.close, #backButton {
+    cursor: pointer; 
+    margin-top: 15px; 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 5px; 
+    background-color: #736e67;
+    color: #f8f5f2; 
+    font-size: 16px; 
+}
+
+.close:hover, #backButton:hover {
+    background-color: #8b7157; 
 }
 
 .about-history {
@@ -129,8 +286,8 @@ footer {
     background-color: #736e67;
     color: #f8f5f2;
     text-align: center;
-    padding: 15px;
-    font-size: 14px;
+    padding: 20px;
+    border-top: 5px solid #d2b48c; 
 }
 
 footer a {
@@ -143,7 +300,6 @@ footer a:hover {
     text-decoration: underline;
 }
 
-/* Animation Keyframes */
 @keyframes fadeIn {
     from {
         opacity: 0;

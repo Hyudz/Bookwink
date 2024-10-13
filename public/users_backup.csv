@@ -1,0 +1,4 @@
+ID,Username,Email,Password,Age,Birthday,Gender,Address,"User Type","Phone Number","Created At","Updated At"
+1,Administrator,admindummy@gmail.com,$2y$10$XCBo03xQMW13YLfZXEpEye5ONnwf6AALi91Sb/zO4EnSGAxdsXYHC,18,2024-10-12,Male,"Caloocan Norte, Binmaley Pangasinan",admin,9500976863,"2024-10-11 17:47:39","2024-10-11 17:47:39"
+2,Hyudz.10,praynohyudz@gmail.com,$2y$10$2TC4AjS5WF975VBLS2ixOOsBGqlSbaO1.lI9QDILMmI6ROUg26Cg6,18,2024-10-12,Male,"Caloocan Norte, Binmaley Pangasinan",user,9500976863,"2024-10-11 17:48:39","2024-10-11 17:48:39"
+3,praynooo,fr.i0n@gmail.com,$2y$10$Xb8SDnB.am9p3cAZKELzk.PfWsRaLjyjxqALP7RTzMkwdFwGdDf5m,18,2024-10-12,Male,"Caloocan Norte, Binmaley Pangasinan",user,9500976863,"2024-10-11 17:49:20","2024-10-11 17:49:20"

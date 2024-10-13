@@ -1,17 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
-<body>
-
-    <nav>
-        @include('navbar')
-    </nav>
-
+@extends('app')
+@section('title', 'My Borrows')
+@section('content')
     <table class="table">
         <thead>
             <tr>
@@ -63,7 +52,4 @@
             </tr>
             @endforeach
         </tbody>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-5Z5Zg5z4l3h6bXrZj7z0nflz9fZz9z0>
-</body>
-</html>
+@endsection

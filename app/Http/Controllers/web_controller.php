@@ -19,7 +19,8 @@ class web_controller extends Controller
     //THIS CONTROLLER IS FOR THE CLIENT SIDE OF THE APPLICATION
     function index() {
         //REDIRECTS TO THE LANDING PAGE
-        return view('index');
+        $books = books_table::all()->where('status', 'available');
+        return view('index', ['books' => $books]);
     }
 
     function login() {
