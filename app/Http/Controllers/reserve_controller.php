@@ -183,6 +183,7 @@ class reserve_controller extends Controller
         ->join('books_tables', 'borrows_table.book_id', '=', 'books_tables.id')
         ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
         ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
+        ->where('users_tables.id', Auth::user()->id)
         ->get();
 
         $user_details = Auth::user();
