@@ -12,6 +12,19 @@
             </tr>
         </thead>
         <tbody>
+            @if($borrowedBooks->isEmpty())
+                <tr>
+                    <td colspan="5">
+                    <div class="col-md-12">
+                        <div class="d-flex flex-column justify-content-center align-items-center">
+                            <img src="{{ asset('img/jeyk.png') }}" alt="empty" style="height: 200px; margin-bottom: 20px;">
+                            <h1 class="text-center mb-3">Your reading journey starts here. Borrow a book!</h1>
+                            <a href="{{ route('homepage') }}" class="btn btn-primary">Explore our collections</a>
+                        </div>
+                    </div>
+                    </td>
+                </tr>
+            @endif
             @foreach($borrowedBooks as $borrowedBook)
             <tr>
                 <td>{{$borrowedBook->title}}</td>

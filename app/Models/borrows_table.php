@@ -31,4 +31,9 @@ class borrows_table extends Model
     {
         return $this->belongsTo(books_table::class, 'book_id', 'id');
     }
+
+    public function notifs()
+    {
+        return $this->hasMany(notifs_table::class, 'borrow_id', 'id');
+    }
 }

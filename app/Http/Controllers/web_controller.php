@@ -11,6 +11,7 @@ use App\Models\bookmarks;
 use Illuminate\Support\Facades\DB;
 use App\Models\books_table;
 use App\Models\borrows_table;
+use App\Models\notifs_table;
 use App\Models\rrs_table;
 
 class web_controller extends Controller
@@ -45,7 +46,8 @@ class web_controller extends Controller
         //SELECTS ALL THE BOOKS FROM THE DATABASE AND RETURNS IT WITH THE VIEW
 
         $books = books_table::all()->where('status', 'available');
-        return view('homepage',['books' => $books]);
+        $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
+        return view('homepage',['books' => $books, 'notifications' => $notifications]);
     }
 
     function login_post(Request $request){
@@ -64,7 +66,9 @@ class web_controller extends Controller
             if (Auth::user()->user_type == 'admin') {
                 return redirect()->route('admin.dashboard')->with('success', 'Login successful');
             }
-            return redirect()->route('homepage')->with('success', 'Login successful');
+
+            $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
+            return redirect()->route('homepage', ['notifications' => $notifications])->with('success', 'Login successful');
         }
         return redirect()->route('login')->with(['error' => 'Invalid email or password']);
     }
@@ -140,7 +144,14 @@ class web_controller extends Controller
         $reviewed = rrs_table::where('user_id', Auth::user()->id)->get();
         $reviewIds = $reviewed->pluck('book_id');
         $isReviewed = $reviewIds->contains($id);
-        return view('view_book', ['book' => $book, 'isBookmarked' => $isBookmarked, 'reviews' => $reviews, 'isReviewed' => $isReviewed]);
+
+        //SELECT * FROM BORROWS_TABLE WHERE USER_ID = Auth::user()->id AND BOOK_ID = $id
+        $isBorrowed = borrows_table::where('user_id', Auth::user()->id)->where('book_id', $id)->where('status', 'pending')->get();
+        //dd($isBorrowed);
+
+        $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
+        
+        return view('view_book', ['book' => $book, 'isBookmarked' => $isBookmarked, 'reviews' => $reviews, 'isReviewed' => $isReviewed, 'isBorrowed' => $isBorrowed, 'notifications' => $notifications]);
     }
 
     function services() {
@@ -155,9 +166,9 @@ class web_controller extends Controller
 
         //NAVIGATES TO THE PROFILE PAGE OF THE USER WITH ITS OWN DETAILS
         $user_details = Auth::user();
-
+        $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
         
-        return view('profile', ['user_details' => $user_details]);
+        return view('profile', ['user_details' => $user_details, 'notifications' => $notifications]);
     }
 
     function forgot_password() {
@@ -202,265 +213,10 @@ class web_controller extends Controller
         return redirect()->route('login')->with('success', 'Profile deleted successfully');
     }
 
-    function bookmarks($id) {
-
-        //this is to add a bookmark to the user
-        $book = books_table::find($id);
-
-        bookmarks::create([
-            'user_id' => Auth::user()->id,
-            'book_id' => $id
-        ]);
-
-        $bookmarked = bookmarks::where('user_id', Auth::user()->id)->get();
-        $bookIds = $bookmarked->pluck('book_id');
-        $isBookmarked = $bookIds->contains($id);
-
-        $reviews = rrs_table::where('book_id', $id)->get();
-        $userIds = $reviews->pluck('user_id');
-
-        $usernames = users_table::whereIn('id', $userIds)->pluck('username', 'id');
-
-        foreach ($reviews as $review) {
-            $review->username = $usernames[$review->user_id] ?? 'Unknown';
-        }
-
-        $reviewed = rrs_table::where('user_id', Auth::user()->id)->get();
-        $reviewIds = $reviewed->pluck('book_id');
-        $isReviewed = $reviewIds->contains($id);
-
-        //SELECT * FROM BOOKS_TABLE WHERE ID = $id
-        // SELECT THE BOOK FROM THE DB WITH ITS ID AND RETURN IT WITH THE VIEW
-
-        //PARANG SAME FUNCTION LANG DIN KAY VIEW BOOK PERO ITO YUNG FUNCTION PARA SA BOOKMARKS
-        return view('view_book', ['book' => $book, 'isBookmarked' => $isBookmarked,  'reviews' => $reviews, 'isReviewed' => $isReviewed]);
-    }
-
-    function bookmark() { 
-
-        //returns the bookmarks of the user
-        $bookmarked = bookmarks::where('user_id', Auth::user()->id)->get();
-        $bookIds = $bookmarked->pluck('book_id');
-        $books = books_table::whereIn('id', $bookIds)->get();
-
-        $user_details = Auth::user();
-
-        return view('bookmarks', ['books' => $books, 'user_details' => $user_details]);
-    }
-
-    function remove_bookmark($id) {
-
-        //SELECT * FROM BOOKMARKS_TABLE WHERE USER_ID = $id
-        // DELETE FROM BOOKMARKS_TABLE WHERE USER_ID = $id AND BOOK_ID = $id
-        bookmarks::where('user_id', Auth::user()->id)->where('book_id', $id)->delete();
-
-        //REDIRECT TO THE BOOKMARKS PAGE WITH SUCCESS MESSAGE
-        return redirect()->route('bookmark')->with('success', 'Bookmark removed successfully');
-    }
-
     //THE FOLLOWING FUNCTIONS ARE FOR THE FUNCTIONALITY OF RATINGS AND REVIEWS FOR THE BOOK
 
-    function add_review(Request $request){
-
-        $request->validate([
-            'review' => 'required',
-            'rating' => 'required',
-        ]);
-
-        //SQL CODE: INSERT INTO RRS_TABLE VALUES ('user_id', 'book_id', 'review', 'rating')
-
-        rrs_table::create([
-            'user_id' => Auth::user()->id,
-            'book_id' => $request->book_id,
-            'review' => $request->review,
-            'rating' => $request->rating,
-        ]);
-
-        //COUNTS THE NUMBER OF USERS WHO RATED THE BOOK
-        //SQL CODE: SELECT COUNT(*) FROM RRS_TABLE WHERE BOOK_ID = $request->book_id
-        $usersRated = rrs_table::where('book_id', $request->book_id)->get()->count();
-
-        //SUMS ALL THE RATINGS OF THE BOOK
-        //SQL CODE: SELECT SUM(RATING) FROM RRS_TABLE WHERE BOOK_ID = $request->book_id
-        $sumRatings = rrs_table::where('book_id', $request->book_id)->sum('rating');
-
-        //COMPUTES THE AVERAGE RATING OF THE BOOK
-        $averageRating = $sumRatings / $usersRated;
-
-        //UPDATES THE AVERAGE RATING OF THE BOOK
-        //SQL CODE: UPDATE BOOKS_TABLE SET RATING = $averageRating WHERE ID = $request->book_id
-        $book = books_table::find($request->book_id);
-        $book->update([
-            'rating' => $averageRating,
-        ]);
-
-        $bookmarked = bookmarks::where('user_id', Auth::user()->id)->get();
-        $bookIds = $bookmarked->pluck('book_id');
-        $isBookmarked = $bookIds->contains($request->book_id);
-
-        $reviews = rrs_table::where('book_id')->get();
-        $userIds = $reviews->pluck('user_id');
-
-        $usernames = users_table::whereIn('id', $userIds)->pluck('username', 'id');
-
-        foreach ($reviews as $review) {
-            $review->username = $usernames[$review->user_id] ?? 'Unknown';
-        }
-
-        $reviewed = rrs_table::where('user_id', Auth::user()->id)->get();
-        $reviewIds = $reviewed->pluck('book_id');
-        $isReviewed = $reviewIds->contains($request->book_id);
-
-        return redirect()->route('view_books', ['id' => $request->book_id, 'isBookmarked' => $isBookmarked, 'isReviewed' => $isReviewed ])->with('success', 'Review added successfully');
-
-    }
-
-    function update_review(Request $request, $id){
-
-        $request->validate([
-            'review' => 'required',
-            'rating' => 'required',
-        ]);
     
-        // FIND THE REVIEW USING THE ID PASSED
-        $review = rrs_table::find($id);
     
-        $review->update([
-            'review' => $request->review,
-            'rating' => $request->rating,
-        ]);
-    
-        $book_id = $review->book_id;
-        // COUNT THE NUMBER OF USERS WHO RATED THE BOOK
-        $usersRated = rrs_table::where('book_id', $book_id)->count();
-    
-        // SUM ALL THE RATINGS OF THE BOOK
-        $sumRatings = rrs_table::where('book_id', $book_id)->sum('rating');
-    
-        $averageRating = $usersRated > 0 ? $sumRatings / $usersRated : 0;
-        $book = books_table::find($book_id);
-        $book->update([
-            'rating' => $averageRating,
-        ]);
-    
-        return redirect()->route('view_books', ['id' => $book_id])->with('success', 'Review updated successfully');
-    }
-    
-
-    function delete_review($id){
-
-        // Find the review by its ID
-        $review = rrs_table::find($id);
-    
-        // Store the book_id before deleting the review
-        $book_id = $review->book_id;
-    
-        // Delete the review
-        $review->delete();
-    
-        // Count the number of users who rated the book
-        $usersRated = rrs_table::where('book_id', $book_id)->count();
-    
-        // Sum all the ratings of the book
-        $sumRatings = rrs_table::where('book_id', $book_id)->sum('rating');
-    
-        // Compute the average rating of the book, ensuring no division by zero
-        $averageRating = $usersRated > 0 ? $sumRatings / $usersRated : 0;
-    
-        // Update the average rating of the book
-        $book = books_table::find($book_id);
-        $book->update([
-            'rating' => $averageRating,
-        ]);
-    
-        return redirect()->route('view_books', ['id' => $book_id])->with('success', 'Review deleted successfully');
-    }
-    
-
-    function request_reserve($id) {
-
-    //ETO YUNG MAG NO NOTIFY KAY ADMIN IF MAY NAG REQUEST NG RESERVATION
-    //SQL CODE: INSERT INTO BORROWS_TABLE VALUES ('user_id', 'book_id', 'status', 'borrow_date', 'return_date')
-    borrows_table::create([
-        'user_id' => Auth::user()->id,
-        'book_id' => $id,
-        'status' => 'pending',
-        'borrow_date' => date('Y-m-d'),
-        'return_date' => date('Y-m-d', strtotime('+7 days')),
-    ]);
-
-    return redirect()->route('homepage')->with('success', 'Reservation requested successfully');
-
-    }
-
-    function cancel_reservation($id) {  
-
-        //USER CANCELS THE RESERVATION
-
-        //SQL CODE: UPDATE BORROWS_TABLE SET STATUS = 'cancelled' WHERE ID = $id
-
-        $borrow_status = borrows_table::findorFail($id);
-        $borrow_status-> status = 'cancelled';
-        $borrow_status->save();
-
-        //SQL CODE: UPDATE BOOKS_TABLE SET STATUS = 'available' WHERE ID = $borrow_status->book_id
-
-        $book = books_table::find($borrow_status->book_id);
-        $book->status = 'available';
-        $book->save();
-
-        return redirect()->route('homepage')->with('success', 'Reservation cancelled successfully');
-
-    }
-
-    function pickup($id) {
-
-        //ETO NAMAN PAG NAKUHA NA NI CLIENT YUNG BOOK
-
-        //SQL CODE: UPDATE BORROWS_TABLE SET STATUS = 'borrowed' WHERE ID = $id
-
-        $borrow_status = borrows_table::findorFail($id);
-        $borrow_status-> status = 'borrowed';
-        $borrow_status->save();
-
-        return redirect()->route('homepage')->with('success', 'Book picked up successfully');
-
-    }
-
-    function return_book($id) {
-
-    //ETO YUNG MAG NONOTIFY SI ADMIN IF NIRETURN NA NI CLIENT YUNG BOOK TAS SI ADMIN NA BAHALA MAG APPROVE
-
-    //SQL CODE: UPDATE BORROWS_TABLE SET STATUS = 'request return' WHERE ID = $id
-    $borrow_status = borrows_table::findorFail($id);
-    $borrow_status-> status = 'request return';
-    $borrow_status->save();
-
-    return redirect()->route('homepage')->with('success', 'Book returned successfully');
-
-    }
-
-    function my_borrows() {
-
-        //SELECTS ALL THE BORROWED BOOKS OF THE USER AND RETURNS IT WITH THE VIEW
-
-        //SQL CODE:
-        // SELECT borrows_table.*, books_tables.title, users_tables.username 
-        // FROM borrows_table
-        // INNER JOIN books_tables ON borrows_table.book_id = books_tables.id
-        // INNER JOIN users_tables ON borrows_table.user_id = users_tables.id;
-
-        $borrowedBooks = DB::table('borrows_table')
-        ->join('books_tables', 'borrows_table.book_id', '=', 'books_tables.id')
-        ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
-        ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
-        ->get();
-
-        $user_details = Auth::user();
-
-        return view('my_borrows', ['borrowedBooks' => $borrowedBooks, 'user_details' => $user_details]);
-
-    }
 
     
 }

@@ -21,6 +21,21 @@
             </a>    
 
             <div class="d-flex ms-3">
+            <li class="nav-item dropdown">
+                        <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge rounded-pill badge-notification bg-danger">
+                                {{$notifications->count()}}
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                            <li>
+                                @foreach($notifications as $notification)
+                                    <a class="dropdown-item" href="{{route('my_borrows')}}">{{$notification->message}}</a>
+                                @endforeach
+                            <li>
+                        </ul>
+                    </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa-solid fa-users rounded-circle" height="22"> </i>

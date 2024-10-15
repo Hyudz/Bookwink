@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users_tables')->onDelete('cascade');
+            $table->unsignedBigInteger('borrow_id');
+            $table->foreign('borrow_id')->references('id')->on('borrows_table')->onDelete('cascade');
             $table->string('notification_type');
             $table->string('message');
             $table->boolean('is_read');

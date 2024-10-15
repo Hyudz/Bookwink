@@ -13,7 +13,7 @@
         <div class="col">
             <img src="{{ asset('img/pfp.png') }}" style="height: 100px; object-fit: contain;" alt="User Profile">
         </div>
-        <div class="col">
+        <div class="col-md-auto">
             <h4>{{ $user_details->username }}</h4>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Edit Profile</button>
 
@@ -90,23 +90,22 @@
         </div>
     </div>
 
-    <div class="container-fluid mt-3">
+    <div class="container mt-3 p-3" style="border: 3px solid;">
         <div class="container">
             <div class="d-flex justify-content-center">
-                <div class="w-50 text-center">
+                <div class="w-50 text-center" style="border: 3px solid;">
                     <a href="{{route('bookmark')}}" style="color: inherit;">
                         <i class="fa-solid fa-bookmark" ></i>
                     </a>
                 </div>
-                <div class="w-50 text-center">
+                <div class="w-50 text-center" style="border: 3px solid;">
                     <a href="{{route('my_borrows')}}" style="color: inherit;">
                         <i class="fas fa-history"></i>
                     </a>
                 </div>
             </div>
         </div>
+        @yield('contents')
     </div>
-
-    @yield('contents')
     
 @endsection

@@ -71,11 +71,23 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-bell"></i>
+                            <span class="badge rounded-pill badge-notification bg-danger">
+                                {{$notifications->count()}}
+                            </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="#">Notif 1</a></li>
-                            <li><a class="dropdown-item" href="#">Notif 2</a></li>
-                            <li><a class="dropdown-item" href="#">Notif 3</a></li>
+                            <li>
+                                <!-- @foreach($notifications as $notification)
+                                    <form class="dropdown-item" action="{{route('admin.read_notification',$notification->id)}}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="notification_id" value="{{$notification->id}}">
+                                        <button type="submit" class="dropdown-item">{{$notification->message}}</button>
+                                    </form>
+                                @endforeach -->
+                                @foreach($notifications as $notification)
+                                    <a class="dropdown-item" href="{{route('admin.read_notification',$notification->id)}}">{{$notification->message}}</a>
+                                @endforeach
+                            <li>
                         </ul>
                     </li>
 
