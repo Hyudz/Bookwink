@@ -134,7 +134,7 @@
 
                     <div class="d-flex flex-row w-100">
                         <div class="form-floating mb-3 w-50">
-                            <input type="date" name="birthday" required class="form-control" id="floatingInput" placeholder="Birthday">
+                            <input type="date" name="birthday" required class="form-control" min="1900-01-01" max="2010-12-31" id="floatingInput" placeholder="Birthday">
                             <label for="floatingInput">Birthday:</label>
                         </div>
 
@@ -176,5 +176,6 @@
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
     </body>
 </html>

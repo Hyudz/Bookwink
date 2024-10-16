@@ -7,49 +7,25 @@
 
     <!-- Book Cover -->
     <div class="column">
-        <img src="{{asset('uploads/'.$book->cover)}}" style="height: 500px; object-fit: contain;" alt="Book Cover">
+        <img src="{{ asset('uploads/' . $book->cover) }}" style="height: 500px; object-fit: contain;" alt="Book Cover">
     </div>
 
     <!-- Book Information -->
     <div class="column ms-4">
         <div class="col-12">
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between align-items-start">
                 <h3 class="book-title">{{ $book->title }}</h3>
 
                 <div class="container-fluid">
                     <!-- Reserve Book Button -->
-                    @if($isBorrowed->isNotEmpty())
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelReserve">Cancel Reservation</button>
-                    <div class="modal fade" id="cancelReserve" tabindex="-1" aria-labelledby="cancelReserveLabel" aria-hidden="true">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#reserveModal">Reserve Book</button>
+                    
+                    <!-- Reserve Book Modal -->
+                    <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="reservModalLabel">Cancel Reserving {{$book->title}}?</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Are you sure you want to cancel your reservation for {{$book->title}}?
-                                </div>
-                                <div class="modal-footer">
-                                    @foreach($isBorrowed as $borrowed)
-                                    <form action="{{route('cancel',$borrowed->id)}}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="book_id" value="{{$book->id}}">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </form>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @else
-                    @if($book->status == 'available')
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveModal">Reserve Book</button>
-                    <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reservModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="reservModalLabel">Reserve {{ $book->title }}</h1>
+                                    <h1 class="modal-title fs-5" id="reserveModalLabel">Reserve {{ $book->title }}</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -58,26 +34,23 @@
                                 <div class="modal-footer">
                                     <form action="{{ route('reserve_book', $book->id) }}" method="post">
                                         @csrf
-                                        <button type="submit" class="btn btn-primary">Reserve</button>
+                                        <button type="submit" class="btn btn-secondary">Reserve</button>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    @else
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveModal" disabled>Reserve Book</button>
-                    @endif
-                    @endif
+                    <!-- End of Modal -->
 
                     <!-- Bookmark Button -->
                     @if($isBookmarked)
-                    <form action="{{route('remove_bookmark',$book->id)}}" method="POST">
+                    <form action="{{ route('remove_bookmark', $book->id) }}" method="POST">
                         @method('DELETE')
                         @csrf
                         <button type="submit" class="btn btn-danger"><i class="fa-solid fa-bookmark"></i> Remove Bookmark</button>
                     </form>
                     @else
-                    <form action="{{route('add_bookmark',$book->id)}}" method="POST">
+                    <form action="{{ route('add_bookmark', $book->id) }}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-bookmark"></i> Add to Bookmarks</button>
                     </form>
@@ -89,14 +62,6 @@
             <div class="d-flex mt-3">
                 <p><strong>Author:</strong> {{ $book->author }}</p>
                 <p class="ms-4"><strong>Average Rating:</strong> {{ $book->rating }}</p>
-                <p class="ms-4"><strong>Category:</strong> {{ $book->category }}</p>
-                <p class="ms-4"><strong>Status:</strong>
-                    @if($book->status == 'available')
-                    <span class="text-success">Available</span>
-                    @else
-                    <span class="text-danger">Unavailable</span>
-                    @endif
-                </p>
             </div>
             <p><strong>Summary:</strong> {{ $book->description }}</p>
         </div>
@@ -132,7 +97,7 @@
                 <label for="review">Review</label>
                 <textarea name="review" class="form-control" id="review" rows="3" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            <button type="submit" class="btn btn-secondary mt-3">Submit</button>
         </form>
     </div>
     @else
@@ -162,7 +127,7 @@
                 <label for="review-{{ $review->id }}">Review</label>
                 <textarea name="review" class="form-control" id="review-{{ $review->id }}" rows="3" required>{{ $review->review }}</textarea>
             </div>
-            <button type="submit" class="btn btn-primary mt-3">Update</button>
+            <button type="submit" class="btn btn-secondary mt-3">Update</button>
         </form>
 
         <!-- Delete Review -->
@@ -176,29 +141,18 @@
     </div>
     @endif
 
-    <!-- Display All Reviews -->
-    <div class="container">
-        @if($reviews->isNotEmpty())
-        @foreach($reviews as $review)
-        <div class="border rounded p-2 mb-3">
-            <div class="d-flex justify-content-between">
-                <p class="fw-bold">{{ $review->user->name }}</p>
-                <p>{{ $review->created_at->format('M d, Y') }}</p>
-            </div>
-            <div class="d-flex">
-                <div class="star-rating">
-                    @for($i=1; $i<=5; $i++)
-                    <label>&#9733;</label>
-                    @endfor
-                </div>
-                <p class="ms-4">{{ $review->review }}</p>
-            </div>
+    <!-- Display Other Reviews -->
+    @foreach($reviews as $review)
+    <div class="container mb-3">
+        @if($review->user_id != Auth::user()->id)
+        <div>
+            <p><strong>By:</strong> {{ $review->user->username }}</p>
+            <p><strong>Rating:</strong> {{ $review->rating }}</p>
+            <p><strong>Review:</strong> {{ $review->review }}</p>
         </div>
-        @endforeach
-        @else
-        <p>No reviews for this book yet.</p>
         @endif
     </div>
+    @endforeach
 </div>
 
 @endsection

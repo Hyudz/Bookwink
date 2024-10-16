@@ -116,7 +116,7 @@ class reserve_controller extends Controller
                 $approved_notification->save();
             }
         }
-        return redirect()->route('homepage')->with('success', 'Book picked up successfully');
+        return redirect()->route('my_borrows')->with('success', 'Book picked up successfully');
 
     }
 
@@ -165,7 +165,7 @@ class reserve_controller extends Controller
             }
         }
 
-        return redirect()->route('homepage')->with('success', 'Book returned successfully');
+        return redirect()->route('my_borrows')->with('success', 'Book returned successfully');
 
     }
 

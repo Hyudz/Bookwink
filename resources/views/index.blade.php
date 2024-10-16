@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Bookwink: Discover books, ebooks, and more. Empowering minds since 1902.">
     <title>Landing Page</title>
-    <link href="{{asset('img/logogo.png')}}" rel="icon" type="image/x-icon">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
+    <link href="https://fonts.googleapis.com/css2?family=Baskerville&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -25,142 +25,121 @@
         <section class="hero">
             <div class="hero-text">
                 <h2>WELCOME!</h2>
-                <p>Discover books, ebooks, and more at the Bookwink. Open to everyone, empowering minds and shaping the future.</p>
+                <p>Discover books, ebooks, and more at Bookwink. Open to everyone, empowering minds and shaping the future.</p>
                 <a href="{{route('login')}}" class="btn">Start now!</a>
             </div>
         </section>
 
-        <section class="carousel">
-            <h2 class="carousel-title">Here's the Sample Books</h2>
-            <div class="carousel-container">
-                @foreach($books as $book)
-                <div class="carousel-slide active">
-                    <img src="{{asset('uploads/'.$book->cover)}}" alt="Book 1">
+        <section class="discover-books-section">
+            <h2>Our Collection of Books</h2>
+            <p>Explore a vast collection of books, ebooks, and other resources. Whether you're into fiction, non-fiction, or academic research, we have something for everyone.</p>
+        </section>             
+            
+            <section class="books-section">
+                <div class="book-columns">
+                    <div class="book-column" data-description="Description for My Hero Academia: Team-Up Missions">
+                        <img src="{{asset('uploads/1728669488.jpg')}}" alt="Book 1" onclick="openModal(0)">
+                        <h3>My Hero Academia: Team-Up Missions</h3>
+                        <button class="read-more" onclick="redirectToSignIn()">Read More</button>
+                    </div>
+                    
+                    <div class="book-column" data-description="Description for One-Punch Man, Vol. 27" onclick="openModal(1)">
+                        <img src="{{asset('uploads/1728669772.jpg')}}" alt="Book 2" onclick="openModal(0)">
+                        <h3>One-Punch Man, Vol. 27</h3>
+                        <button class="read-more" onclick="redirectToSignIn()">Read More</button>
+                    </div>
+                    
+                    <div class="book-column" data-description="Description for Jujutsu Kaisen, Vol. 22" onclick="openModal(2)">
+                        <img src="{{asset('uploads/1728669836.jpg')}}" alt="Book 3" onclick="openModal(0)">
+                        <h3>Jujutsu Kaisen, Vol. 22</h3>
+                        <button class="read-more" onclick="redirectToSignIn()">Read More</button>
+                    </div>
+                    <div class="book-column" data-description="Description for One Piece: Ace's Story" onclick="openModal(3)">
+                        <img src="{{asset('uploads/1728669941.jpg')}}" alt="Book 4" onclick="openModal(0)">
+                        <h3>One Piece: Ace's Story</h3>
+                        <button class="read-more" onclick="redirectToSignIn()">Read More</button>
+                    </div>
+                    <div class="book-column" data-description="Description for Given, Vol. 9" onclick="openModal(4)">
+                        <img src="{{asset('uploads/1728670027.jpg')}}" alt="Book 5" onclick="openModal(0)">
+                        <h3>Given, Vol. 9</h3>
+                        <button class="read-more" onclick="redirectToSignIn()">Read More</button>
+                    </div>
+                    
+                    <div class="book-column" data-description="Description for Gokurakugai, Vol. 1" onclick="openModal(5)">
+                        <img src="{{asset('uploads/1728670081.jpg')}}" alt="Book 6" onclick="openModal(0)">
+                        <h3>Gokurakugai, Vol. 1</h3>
+                        <button class="read-more" onclick="redirectToSignIn()">Read More</button>
+                    </div>
+                    
                 </div>
-                @endforeach
-            </div>
-            <button class="carousel-control prev">&#10094;</button>
-            <button class="carousel-control next">&#10095;</button>
-        </section>
-
-        <div class="modal" id="imageModal">
-            <div class="modal-content">
-                <img id="modalImage" src="" alt="Modal Image">
-                <p id="modalDescription"></p>
-                <button id="backButton" class="btn">Back</button>
-            </div>
-        </div>
-
-        <section class="about-service" id="service">
-            <div class="container">
-                <h2>Service</h2>
-                <p>Our Simple Library Management System offers services that streamline user interactions with library resources. Key functions include creating, reading, updating, and deleting book records, along with user management for tracking borrowed materials. The user-friendly interface simplifies library management for all users.</p>
-            </div>
-        </section>
-
-        <section class="about-history" id="about">
-            <div class="container">
-                <h2>About Us</h2>
-                <p>Bookwink has been serving the community since 1902, providing access to a vast collection of books, digital resources, and educational programs. Whether you're looking for the latest bestseller or in-depth research materials, we have something for every reader.</p>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2024 Bookwink. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
-    </footer>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const slides = document.querySelectorAll('.carousel-slide');
-            const totalSlides = slides.length;
-            let currentIndex = 0;
-        
-            const prevButton = document.querySelector('.carousel-control.prev');
-            const nextButton = document.querySelector('.carousel-control.next');
+    
+                <div class="modal" id="descriptionModal">
+                    <div class="modal-content">
+                        <img id="modalImage" src="" alt="Modal Image">
+                        <p id="modalDescription"></p>
+                        <button id="backButton" class="btn">Back</button>
+                    </div>
+                </div>
+            </section>        
             
-            const descriptions = [
-                "My Hero Academia: Team-Up Missions, Vol. 5 - My Hero Academia: Team-Up Missions 5 (Paperback)",
-                "One-Punch Man, Vol. 27 - One-Punch Man 27 (Paperback)",
-                "Jujutsu Kaisen, Vol. 22 - Jujutsu Kaisen 22 (Paperback)",
-                "One Piece: Ace's Story—The Manga, Vol. 1 - One Piece: Ace's Story—The Manga 1 (Paperback)",
-                "Given, Vol. 9 - Given 9 (Paperback)",
-                "Gokurakugai, Vol. 1 - Gokurakugai 1 (Paperback)",
-            ];
-        
-            function updateCarousel() {
-                slides.forEach((slide, index) => {
-                    if (index === currentIndex) {
-                        slide.classList.add('active');
-                        slide.style.opacity = '1'; 
-                        slide.style.transform = 'translateX(0)';
-                    } else {
-                        slide.classList.remove('active');
-                        slide.style.opacity = '0'; 
-                        slide.style.transform = 'translateX(-20px)'; 
-                    }
+            <section class="about-service" id="service">
+                <div class="container">
+                    <h2>Service</h2>
+                    <p>Our Simple Library Management System offers services that streamline user interactions with library resources. Key functions include creating, reading, updating, and deleting book records, along with user management for tracking borrowed materials. The user-friendly interface simplifies library management for all users.</p>
+                </div>
+            </section>
+            
+            <section class="about-history" id="about">
+                <div class="container">
+                    <h2>About Us</h2>
+                    <p>Bookwink has been serving the community since 1902, providing access to a vast collection of books, digital resources, and educational programs. Whether you're looking for the latest bestseller or in-depth research materials, we have something for every reader.</p>
+                </div>
+            </section>
+            
+        </main>
+    
+        <footer>
+            <p>&copy; 2024 Bookwink. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </footer>
+    
+        <script>
+
+            function redirectToSignIn() {
+                window.location.href = "{{route('login')}}"; // Change this to your actual sign-in page URL dito yun
+            }            
+
+            document.addEventListener("DOMContentLoaded", function() {
+                const columns = document.querySelectorAll('.book-column');
+                const modal = document.getElementById("descriptionModal");
+                const modalImage = document.getElementById("modalImage");
+                const modalDescription = document.getElementById("modalDescription");
+                const backButton = document.getElementById("backButton");
+            
+             
+                columns.forEach((column) => {
+                    column.addEventListener("click", function() {
+                        const imgSrc = column.querySelector('img').src;
+                        const description = column.getAttribute('data-description');
+                        modalImage.src = imgSrc;
+                        modalDescription.textContent = description;
+                        modal.style.display = "block";
+                    });
                 });
-            }
-        
-            prevButton.addEventListener('click', function() {
-                currentIndex = (currentIndex > 0) ? currentIndex - 1 : totalSlides - 1;
-                updateCarousel();
-            });
-        
-            nextButton.addEventListener('click', function() {
-                currentIndex = (currentIndex < totalSlides - 1) ? currentIndex + 1 : 0;
-                updateCarousel();
-            });
-        
-            updateCarousel();
-        
-            const modal = document.getElementById("imageModal");
-            const modalImage = document.getElementById("modalImage");
-            const modalDescription = document.getElementById("modalDescription");
-            const backButton = document.getElementById("backButton");
-        
-            function openModal(index) {
-                modal.style.display = "block"; 
-                modalImage.src = slides[index].querySelector('img').src;
-                modalDescription.textContent = descriptions[index]; 
-            }
-        
-            slides.forEach((slide, index) => {
-                slide.addEventListener("click", function() {
-                    if (index === currentIndex) { // Only open modal for the active slide
-                        openModal(index);
-                    }
-                });
-            });
-        
-            backButton.onclick = function() {
-                modal.style.display = "none";
-            };
-        
-            window.onclick = function(event) {
-                if (event.target === modal) {
+            
+                
+                backButton.onclick = function() {
                     modal.style.display = "none";
-                }
-            };
-        
-            const sections = document.querySelectorAll('.about-service, .about-history');
-        
-            function animateSections() {
-                sections.forEach(section => {
-                    const sectionPosition = section.getBoundingClientRect().top;
-                    const screenPosition = window.innerHeight / 1.2; 
-        
-                    if (sectionPosition < screenPosition) {
-                        section.classList.add('fade-in');
-                    }
-                });
-            }
-        
-            window.addEventListener('scroll', animateSections);
+                };
             
-            animateSections();
-        });        
-    </script>
-
-</body>
-</html>
+              
+                window.onclick = function(event) {
+                    if (event.target === modal) {
+                        modal.style.display = "none";
+                    }
+                };
+            });             
+        </script>
+    
+    </body>
+    </html>
+    

@@ -76,34 +76,44 @@ class web_controller extends Controller
 
     function signup_post(Request $request) {
 
-        //VALIDATES THE REQUEST AND CREATES A NEW USER
-
+        // Calculate age based on the birthday input
+        $birthday = new \DateTime($request->birthday);
+        $today = new \DateTime();
+        $age = $today->diff($birthday)->y;
+    
+        // Set the minimum age requirement
+        $minimumAge = 13;
+    
+        // VALIDATE THE REQUEST
         $request->validate([
             'username' => 'required',
-            'email' => 'required',
+            'email' => 'required|email',
             'password' => 'required|confirmed',
-            'birthday' => 'required',
+            'birthday' => 'required|date',
             'gender' => 'required',
             'address' => 'required',
             'phone_number' => 'required'
         ]);
-
-        //INSERT INTO USERS_TABLES VALUES ('username', 'email', 'password', 'age', 'birthday','gender', 'address', 'user_type', 'phone_number');
-        
+    
+        // Check if the user meets the minimum age requirement
+        if ($age < $minimumAge) {
+            return redirect()->route('signup')->withErrors(['birthday' => 'You must be at least ' . $minimumAge . ' years old to sign up.']);
+        }
+    
+        // CREATE A NEW USER
         $user = users_table::create([
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'age' => 18,
+            'age' => $age,
             'birthday' => $request->birthday,
             'gender' => $request->gender,
             'address' => $request->address,
             'user_type' => 'user',
             'phone_number' => $request->phone_number
         ]);
-
-        //AUTO LOGIN AFTER CREATING A NEW USER
-
+    
+        // AUTO LOGIN AFTER CREATING A NEW USER
         if ($user) {
             $credentials = [
                 'email' => $request->input('email'),
@@ -114,11 +124,11 @@ class web_controller extends Controller
                 return redirect()->route('homepage')->with('success', 'User created successfully');
             }
         } else {
-            //ELSE REDIRECT TO SIGNUP PAGE WITH ERROR
+            // ELSE REDIRECT TO SIGNUP PAGE WITH ERROR
             return redirect()->route('signup')->with('error', 'User not created');
         }
-
     }
+    
     
 
     function view_books($id) {

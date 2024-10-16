@@ -24,6 +24,10 @@ Route::get('/', [web_controller::class,'index']) -> name('index');
 Route::get('/login', [web_controller::class,'login']) -> name('login');
 Route::get('/signup', [web_controller::class,'signup']) -> name('signup');
 Route::post('/home', [web_controller::class,'login_post']) -> name('login_post');
+Route::post('/signup', [web_controller::class,'signup_post']) -> name('signup_post');
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/home', [web_controller::class,'home']) -> name('home');
 Route::get('/homepage', [web_controller::class,'homepage']) -> name('homepage');
 Route::get('/logout', [web_controller::class,'logout']) -> name('logout');
 Route::get('/view_books/{id}', [web_controller::class,'view_books']) -> name('view_books');
@@ -31,7 +35,6 @@ Route::get('/services', [web_controller::class,'services']) -> name('services');
 Route::get('/about_us', [web_controller::class,'about_us']) -> name('about_us');
 Route::get('/profile', [web_controller::class,'profile_page']) -> name('profile');
 Route::get('/forgot_password', [web_controller::class,'forgot_password']) -> name('reset_password');
-Route::post('/signup', [web_controller::class,'signup_post']) -> name('signup_post');
 Route::put('/update_profile/{id}', [web_controller::class,'update_profile']) -> name('update_profile');
 Route::delete('/delete_profile/{id}', [web_controller::class,'delete_profile']) -> name('delete_profile');
 
@@ -49,6 +52,7 @@ Route::get('/my_borrows', [reserve_controller::class,'my_borrows']) -> name('my_
 Route::post('/pickup/{id}', [reserve_controller::class,'pickup']) -> name('pickup');
 Route::post('/cancel/{id}', [reserve_controller::class,'cancel_reservation']) -> name('cancel');
 Route::post('/return/{id}', [reserve_controller::class,'return_book']) -> name('return');
+});
 
 Route::post('/search', [web_controller::class,'search']) -> name('search');
 Route::get('/search_results', [web_controller::class,'search_results']) -> name('search_results');
