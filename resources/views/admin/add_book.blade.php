@@ -52,9 +52,10 @@
                             <label for="floatingTitle">Book Title:</label>
                         </div>
 
-                        <div class="form-floating mb-3 flex-grow-1 me-2">
+                        <div class="mb-3 flex-grow-1 me-2">
+                            <label for="floatingCategory">Book Category:</label>
                             <select class="form-select" name="book_category" id="floatingCategory">
-                                <option selected>Categoy:</option>
+                                <option value="" disabled selected>Category:</option>
                                 <option value="Fiction">Fiction</option>
                                 <option value="Sci-Fi">Science-Fiction</option>
                                 <option value="Science">Science</option>

@@ -13,13 +13,17 @@ class book_controller extends Controller
 {
     function add_book_post(Request $request) {
         $request->validate([
-            'book_name' => 'required',
-            'book_author' => 'required',
+            'book_name' => 'required|max:100',
+            'book_author' => ['required', 'max:40', 'regex:/^[a-zA-Z\s\.\-]+$/'],
             'book_category' => 'required',
             'book_description' => 'required|max:65535',
             'book_cover' => 'required|image|mimes:jpg,jpeg,png|max:4096',
+        ], [
+            'book_author.regex' => 'The book author must contain only letters, spaces, dashes, and periods.',
         ]);
-
+    
+        // Continue processing the request...
+    
         //SQL CODE: INSERT INTO books_table (title, author, category, description, cover, status, rating) VALUES ($request->book_name, $request->book_author, $request->book_category, $request->book_description, $filename, 'available', 0)
 
         $file = $request->file('book_cover');
@@ -52,11 +56,13 @@ class book_controller extends Controller
         //SQL CODE: UPDATE books_table SET title = $request->book_name, author = $request->book_author, category = $request->book_category, description = $request->book_description WHERE id = $request->id
 
         $request->validate([
-            'book_name' => 'required',
-            'book_author' => 'required',
+            'book_name' => 'required|max:100',
+            'book_author' => 'required|max:40', 'regex:/^[a-zA-Z\s\.\-]+$/',
             'book_category' => 'required',
             'book_description' => 'required|max:65535',
             'book_cover' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
+        ], [
+            'book_author.regex' => 'The book author must contain only letters, spaces, dashes, and periods.',
         ]);
     
         $book = books_table::find($request->id);
