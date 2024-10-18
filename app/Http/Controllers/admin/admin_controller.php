@@ -25,8 +25,7 @@ class admin_controller extends Controller
         return view('admin.dashboard', ['books' => $books, 'reserved_books' => $reserved_books, 'users' => $users, 'notifications' => $notifications]);
     }
 
-    function read_notification($id)
-    {
+    function read_notification($id) {
         // Step 1: Mark the notification as read
         $notification = notifs_table::find($id);
         $notification->is_read = true;
@@ -80,15 +79,17 @@ class admin_controller extends Controller
         $books = books_table::all();
         $fileNameBooks = 'books_backup.csv';
         $fileBooks = fopen($fileNameBooks, 'w');
-        fputcsv($fileBooks, ['ID', 'Title', 'Author', 'Category', 'Description', 'Status', 'Cover', 'Rating', 'Created At', 'Updated At']);
+        fputcsv($fileBooks, ['ID', 'Title', 'Title Copy', 'Author', 'Category', 'Description', 'Favorite Color' ,'Status', 'Cover', 'Rating', 'Created At', 'Updated At']);
 
         foreach ($books as $book) {
             $data = [
                 $book->id,
                 $book->title,
+                $book->tittle_copy,
                 $book->author,
                 $book->category,
                 $book->description,
+                $book->favorite_color,
                 $book->status,
                 $book->cover,
                 $book->rating,
@@ -100,91 +101,6 @@ class admin_controller extends Controller
         }
         fclose($fileBooks);
 
-        // Export users to CSV
-        $users = users_table::all();
-        $fileNameUsers = 'users_backup.csv';
-        $fileUsers = fopen($fileNameUsers, 'w');
-        fputcsv($fileUsers, ['ID', 'Username', 'Email', 'Password', 'Age', 'Birthday', 'Gender', 'Address', 'User Type', 'Phone Number', 'Created At', 'Updated At']);
-
-        foreach ($users as $user) {
-            $data = [
-                $user->id,
-                $user->username,
-                $user->email,
-                $user->password,
-                $user->age,
-                $user->birthday,
-                $user->gender,
-                $user->address,
-                $user->user_type,
-                $user->phone_number,
-                $user->created_at,
-                $user->updated_at
-            ];
-
-            fputcsv($fileUsers, $data);
-        }
-        fclose($fileUsers);
-
-        // Export borrows to CSV
-        $borrows = borrows_table::all();
-        $fileNameBorrows = 'borrows_backup.csv';
-        $fileBorrows = fopen($fileNameBorrows, 'w');
-        fputcsv($fileBorrows, ['ID', 'User ID', 'Book ID', 'Status', 'Created At', 'Updated At', 'Favorite Color']);
-
-        foreach ($borrows as $borrow) {
-            $data = [
-                $borrow->id,
-                $borrow->user_id,
-                $borrow->book_id,
-                $borrow->status,
-                $borrow->created_at,
-                $borrow->updated_at,
-                $borrow->favorite_color
-            ];
-
-            fputcsv($fileBorrows, $data);
-        }
-        fclose($fileBorrows);
-
-        // EXPORT THE RRS (RATINGS AND REVIEWS) TABLE TO CSV
-
-        $rrs = rrs_table::all();
-        $fileNameRrs = 'rrs_backup.csv';
-        $fileRrs = fopen($fileNameRrs, 'w');
-        fputcsv($fileRrs, ['ID', 'User ID', 'Book ID', 'Rating', 'Review', 'Created At', 'Updated At', 'Review Copy']);
-
-        foreach ($rrs as $rr) {
-            $data = [
-                $rr->id,
-                $rr->user_id,
-                $rr->book_id,
-                $rr->rating,
-                $rr->review,
-                $rr->created_at,
-                $rr->updated_at,
-                $rr->review_copy
-            ];
-
-            fputcsv($fileRrs, $data);
-        }
-        fclose($fileRrs);
-
-        // Create a ZIP file containing all CSV files
-        $zipFileName = 'backup_files.zip';
-        $zip = new \ZipArchive();
-
-        if ($zip->open($zipFileName, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
-            $zip->addFile($fileNameBooks);
-            // $zip->addFile($fileNameUsers);
-            $zip->addFile($fileNameBorrows);
-            // $zip->addFile($fileNameRrs);
-            $zip->close();
-        } else {
-            return response()->json(['error' => 'Could not create ZIP file.'], 500);
-        }
-
-        // Return the ZIP file as a download
-        return response()->download($zipFileName)->deleteFileAfterSend(true);
+        return response()->download($fileNameBooks)->deleteFileAfterSend(true);
     }
 }

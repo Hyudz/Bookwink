@@ -106,27 +106,48 @@
                 @endif
             </div>
 
-            <!-- Login Form -->
+            <!-- New Password Form -->
             <div class="form-container">
-                <h1>Welcome Back!</h1>
-                <form action="{{route('login_post')}}" method="post">
-                    @csrf
-                    <div class="form-floating mb-3">
-                        <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                        <label for="floatingInput">Email:</label>
+        <h1>Forgot Password</h1>
+        <p>Enter your email address to reset your password.</p>
+        <div class="mt-5">
+                @if($errors->any())
+                    <div class="col-12">
+                        @foreach($errors->all() as $error)
+                            <div class="alert alert-danger">{{$error}}</div>
+                        @endforeach
                     </div>
-                    <div class="form-floating mt-4">
-                        <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
-                        <label for="floatingPassword">Password</label>
-                    </div>
-                    <button type="submit" class="btn btn-secondary mt-4 w-50">Sign In</button>
-                </form>
-
-                <div class="sign-up mt-4">
-                    <p>Don't have an account? <a href="{{route('signup')}}">Sign Up!</a></p>
-                    <a href="{{route('forgot_password')}}">Forgot Password</a>
                 </div>
+                @endif
+
+                @if(session()->has('error'))
+                    <div class="alert alert-danger">{{session('error')}}</div>
+                @endif
+
+                @if(session()->has('success'))
+                    <div class="alert alert-success">{{session('success')}}</div>
+                @endif
             </div>
+        <form action="{{route('reset_password_post',$token)}}" method="post">
+            @csrf
+            <input type="hidden" name="token" value="{{$token}}">
+            <div class="form-floating mb-3">
+                <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <label for="floatingInput">Email:</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="password" name="password" class="form-control" id="floatingInput" placeholder="">
+                <label for="floatingInput">Enter new password:</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="password" name="password_confirmation" class="form-control" id="floatingInput" placeholder="">
+                <label for="floatingInput">Confirm new Password:</label>
+            </div>
+            <button type="submit" class="btn btn-secondary mt-4 w-50">Submit</button>
+        </form>
+    </div>
         </div>
 
         <!-- Bootstrap JS -->

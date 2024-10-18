@@ -34,11 +34,6 @@
                         <i class='fas fa-book-open me-3'></i><span>Manage Books</span>
                     </a>
                     <!-- Button trigger modal -->
-
-                    <a href="{{route('admin.reserved_books')}}" class="list-group-item list-group-item-action py-2 ripple">
-                        <i class="fas fa-chart-line fa-fw me-3"></i><span>Reserved Books Approval</span>
-                    </a>
-
                     <a href="{{route('admin.export_data')}}" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fa-solid fa-file-export me-3"></i><span>Export Data</span>
                     </a>
@@ -72,20 +67,15 @@
                         <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-bell"></i>
                             <span class="badge rounded-pill badge-notification bg-danger">
-                                {{$notifications->count()}}
+                                {{$notifications->where('is_read', false)->count()}}
                             </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                             <li>
-                                <!-- @foreach($notifications as $notification)
-                                    <form class="dropdown-item" action="{{route('admin.read_notification',$notification->id)}}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="notification_id" value="{{$notification->id}}">
-                                        <button type="submit" class="dropdown-item">{{$notification->message}}</button>
-                                    </form>
-                                @endforeach -->
                                 @foreach($notifications as $notification)
-                                    <a class="dropdown-item" href="{{route('admin.read_notification',$notification->id)}}">{{$notification->message}}</a>
+                                    @if(!$notification->is_read)
+                                        <a class="dropdown-item bg-primary" href="{{route('admin.read_notification',$notification->id)}}">{{$notification->message}}</a>
+                                    @endif
                                 @endforeach
                             <li>
                         </ul>
@@ -97,7 +87,7 @@
                             <i class="fa-solid fa-users rounded-circle" height="22"> </i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="#">My profile</a></li>
+                            <!-- <li><a class="dropdown-item" href="#">My profile</a></li> -->
                             <li><a class="dropdown-item" href="#">Change Password</a></li>
                             <li><a class="dropdown-item" href="{{route('logout')}}">Logout</a></li>
                         </ul>

@@ -65,7 +65,7 @@ class requests_controller extends Controller
 
         //SQL CODE: UPDATE borrows_table SET status = 'disapproved' WHERE id = $id
         $borrow = borrows_table::find($id);
-        $borrow->status = 'disapproved';
+        $borrow->status = 'rejected';
         $borrow->save();
 
         //SQL CODE: UPDATE books_table SET status = 'available' WHERE id = $borrow->book_id
@@ -135,7 +135,7 @@ class requests_controller extends Controller
 
         if ($update_admin) {
             $update_admin->is_read = false; // Reset the read status
-            $update_admin->message = 'Return request for the book ' . $book->title . ' has been approved';
+            $update_admin->message = 'You approved the return request.';
             $update_admin->notification_type = 'returned';
             $update_admin->save();
         }
@@ -150,7 +150,7 @@ class requests_controller extends Controller
 
         //SQL CODE: UPDATE borrows_table SET status = 'rejected' WHERE id = $id
         $borrow = borrows_table::find($id);
-        $borrow->status = 'rejected';
+        $borrow->status = 'return rejected';
         $borrow->save();
 
         //SQL CODE: UPDATE books_table SET status = 'reserved' WHERE id = $borrow->book_id

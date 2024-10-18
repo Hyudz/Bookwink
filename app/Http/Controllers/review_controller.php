@@ -96,7 +96,6 @@ class review_controller extends Controller
     
         return redirect()->route('view_books', ['id' => $book_id])->with('success', 'Review updated successfully');
     }
-    
 
     function delete_review($id){
 

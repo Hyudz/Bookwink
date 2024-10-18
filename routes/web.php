@@ -8,6 +8,7 @@ use App\Http\Controllers\review_controller;
 use App\Http\Controllers\reserve_controller;
 use App\Http\Controllers\admin\requests_controller;
 use App\Http\Controllers\admin\book_controller;
+use App\Http\Controllers\forget_password_controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,11 @@ Route::get('/signup', [web_controller::class,'signup']) -> name('signup');
 Route::post('/home', [web_controller::class,'login_post']) -> name('login_post');
 Route::post('/signup', [web_controller::class,'signup_post']) -> name('signup_post');
 
+Route::get('/forgot_password', [forget_password_controller::class,'forgot_password']) -> name('forgot_password');
+Route::post('/forgot_password', [forget_password_controller::class,'forgot_password_post']) -> name('forgot_password_post');
+Route::get('/reset_password/{token}', [forget_password_controller::class,'reset_password']) -> name('reset_password');
+Route::post('/reset_password/{token}', [forget_password_controller::class,'reset_password_post']) -> name('reset_password_post');
+
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', [web_controller::class,'home']) -> name('home');
 Route::get('/homepage', [web_controller::class,'homepage']) -> name('homepage');
@@ -34,7 +40,6 @@ Route::get('/view_books/{id}', [web_controller::class,'view_books']) -> name('vi
 Route::get('/services', [web_controller::class,'services']) -> name('services');
 Route::get('/about_us', [web_controller::class,'about_us']) -> name('about_us');
 Route::get('/profile', [web_controller::class,'profile_page']) -> name('profile');
-Route::get('/forgot_password', [web_controller::class,'forgot_password']) -> name('reset_password');
 Route::put('/update_profile/{id}', [web_controller::class,'update_profile']) -> name('update_profile');
 Route::delete('/delete_profile/{id}', [web_controller::class,'delete_profile']) -> name('delete_profile');
 
@@ -48,7 +53,12 @@ Route::delete('/delete_review/{id}',[review_controller::class,'delete_review'])-
 
 Route::post('/reserve_book/{id}',[reserve_controller::class,'request_reserve'])->name('reserve_book');
 Route::put('/return_book/{id}',[reserve_controller::class,'return_book'])->name('return_book');
-Route::get('/my_borrows', [reserve_controller::class,'my_borrows']) -> name('my_borrows');
+Route::get('/my_borrows/returned', [reserve_controller::class,'my_borrows']) -> name('my_borrows');
+Route::get('/my_borrows/pending', [reserve_controller::class,'pending_books']) -> name('my_borrows.pending');
+Route::get('/my_borrows/approved', [reserve_controller::class,'approved_books']) -> name('my_borrows.approved');
+Route::get('/my_borrows/rejected', [reserve_controller::class,'rejected_books']) -> name('my_borrows.rejected');
+Route::get('/my_borrows/cancelled', [reserve_controller::class,'cancelled_books']) -> name('my_borrows.cancelled');
+Route::get('/my_borrows/returning', [reserve_controller::class,'returning_books']) -> name('my_borrows.returning');
 Route::post('/pickup/{id}', [reserve_controller::class,'pickup']) -> name('pickup');
 Route::post('/cancel/{id}', [reserve_controller::class,'cancel_reservation']) -> name('cancel');
 Route::post('/return/{id}', [reserve_controller::class,'return_book']) -> name('return');
@@ -60,6 +70,8 @@ Route::get('/search_results', [web_controller::class,'search_results']) -> name(
 
 // admin
 
+Route::group(['middleware' => ['auth', 'admin']], function () {
+    Route::get('/admin/dashboard', [admin_controller::class,'dashboard']) -> name('admin.dashboard');
 Route::get('/admin/dashboard', [admin_controller::class,'dashboard']) -> name('admin.dashboard');
 Route::get('/admin/notification/{id}', [admin_controller::class,'read_notification']) -> name('admin.read_notification');
 
@@ -69,7 +81,12 @@ Route::get('/admin/manage_books', [book_controller::class,'manage_books']) -> na
 Route::get('/admin/edit_book/{id}', [book_controller::class,'edit_book']) -> name('admin.edit_book');
 Route::post('/admin/edit_book/{id}', [book_controller::class,'edit_book_post']) -> name('admin.edit_book_post');
 Route::delete('/admin/delete_book/{id}', [book_controller::class,'delete_book']) -> name('admin.delete_book');
-Route::get('/admin/reserved_books', [book_controller::class,'reserved_books']) -> name('admin.reserved_books');
+Route::get('/admin/manage_books/pending', [book_controller::class,'reserved_books']) -> name('admin.reserved_books');
+Route::get('/admin/manage_books/approved', [book_controller::class,'approved_books']) -> name('admin.approved_books');
+Route::get('/admin/manage_books/rejected', [book_controller::class,'rejected_books']) -> name('admin.rejected_books');
+Route::get('/admin/manage_books/returning', [book_controller::class,'returning_books']) -> name('admin.returning_books');
+Route::get('/admin/manage_books/returned', [book_controller::class,'returned_books']) -> name('admin.returned_books');
+Route::get('/admin/manage_books/cancelled', [book_controller::class,'cancelled_borrow']) -> name('admin.cancelled_borrow');
 
 Route::post('/admin/approve_reservation/{id}', [requests_controller::class,'approve_request']) -> name('admin.approve_reservation');
 Route::post('/admin/approve_return/{id}', [requests_controller::class,'approve_return']) -> name('admin.approve_return');
@@ -77,3 +94,4 @@ Route::post('/admin/reject_return/{id}', [requests_controller::class,'reject_ret
 Route::post('/admin/reject_reservation/{id}', [requests_controller::class,'disapprove_request']) -> name('admin.reject_reservation');
 
 Route::get('/admin/export_data', [admin_controller::class,'export_data']) -> name('admin.export_data');
+});

@@ -1,17 +1,6 @@
-@extends('admin.app')
+@extends('admin.manage_books') <!-- This should extend the main layout -->
 
-@section('title', 'Reserved Books') 
-@section('content')
-    <h1 class="text-center">Reserved Books</h1>
-    <div class="mt-5">
-        @if(session()->has('error'))
-            <div class="alert alert-danger">{{session('error')}}</div>
-        @endif
-
-        @if(session()->has('success'))
-            <div class="alert alert-success">{{session('success')}}</div>
-        @endif
-    </div>
+@section('admin.book_contents') 
     <table class="table table-striped">
 
         <thead>
@@ -28,8 +17,6 @@
         <tbody>
             
             @foreach($borrowed_book as $book)
-            
-            @if($book->status != 'cancelled')
             <tr>
                 <td>{{$book->book_id}}</td>
                 <td>{{$book->title}}</td>
@@ -38,36 +25,31 @@
                 <td>{{$book->return_date}}</td>
                 <td>{{$book->status}}</td>
                 <td class="d-flex flex-row">
-                    @if($book->status == 'borrowed')
+                    @if($book->status == 'pending')
+                        <form action="{{route('admin.reject_reservation', $book->id)}}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Disapprove</button>
+                        </form>
 
+                        <form class="ms-3" action="{{route('admin.approve_reservation', $book->id)}}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-success">Approve</button>
+                        </form>
                     @elseif($book->status == 'request return')
-                    <form action="{{route('admin.approve_return',$book->id)}}" method="POST">
-                        @csrf
-                        <input type="hidden" name="book_id" value="{{$book->id}}">
-                        <button type="submit" class="btn btn-success">Approve Return</button>
-                    </form>
+                        <form action="{{route('admin.approve_return', $book->id)}}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-success">Approve Return</button>
+                        </form>
 
-                    <form class="ms-3" action="{{route('admin.reject_return',$book->id)}}" method="POST">
-                        @csrf
-                        <input type="hidden" name="book_id" value="{{$book->id}}">
-                        <button type="submit" class="btn btn-danger">Disapprove Return</button>
-                    </form>
-                    
-                    @elseif($book->status != 'approved')
-                    <form action="{{route('admin.reject_reservation',$book->id)}}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-danger">Disaprove</button>
-                    </form>
-                    <form class="ms-3" action="{{route('admin.approve_reservation',$book->id)}}" method="POST">
-                        @csrf
-                        <input type="hidden" name="book_id" value="{{$book->id}}">
-                        <button type="submit" class="btn btn-success">Approve</button>
-                    </form>
-
+                        <form class="ms-3" action="{{route('admin.reject_return', $book->id)}}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Disapprove Return</button>
+                        </form>
+                    @else
+                        <!-- No actions  -->
                     @endif
                 </td>
             </tr>
-            @endif
             @endforeach
         </tbody>
     </table>

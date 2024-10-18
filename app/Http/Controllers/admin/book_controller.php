@@ -90,7 +90,7 @@ class book_controller extends Controller
         $books = DB::table('books_tables')->get();
         $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
 
-        return view('admin.manage_books', ['books' => $books, 'notifications' => $notifications]);
+        return view('admin.booklist', ['books' => $books, 'notifications' => $notifications]);
     }
 
     function delete_book($id) {
@@ -102,6 +102,7 @@ class book_controller extends Controller
         return redirect()->route('admin.manage_books')->with('success', 'Book deleted successfully');
     }
 
+    //this is for pending approval
     function reserved_books() {
 
         //DISPLAY ALL THE RESERVED/BORROWED BOOKS
@@ -112,9 +113,77 @@ class book_controller extends Controller
         //INNER JOIN books_table ON borrows_table.book_id = books_table.id
         //INNER JOIN users_table ON borrows_table.user_id = users_table.id
 
-        $borrowed_book = DB::table('borrows_table')->where('borrows_table.status', '!=' ,'returned')
-            ->where('borrows_table.status', '!=' ,'disapproved')
-            ->where('borrows_table.status', '!=' ,'rejected')
+        $borrowed_book = DB::table('borrows_table')
+            ->where('borrows_table.status', 'pending')
+            ->join('books_tables', 'borrows_table.book_id', '=', 'books_tables.id')
+            ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
+            ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
+            ->get();
+
+            $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
+
+        return view('admin.reserved_books', ['borrowed_book' => $borrowed_book, 'notifications' => $notifications]);
+    }
+
+    function approved_books(){
+        $borrowed_book = DB::table('borrows_table')
+        ->where('borrows_table.status', 'approved')
+            ->join('books_tables', 'borrows_table.book_id', '=', 'books_tables.id')
+            ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
+            ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
+            ->get();
+
+            $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
+
+        return view('admin.reserved_books', ['borrowed_book' => $borrowed_book, 'notifications' => $notifications]);
+
+    }
+
+    function rejected_books(){
+        $borrowed_book = DB::table('borrows_table')
+        ->where('borrows_table.status', 'rejected')
+            ->join('books_tables', 'borrows_table.book_id', '=', 'books_tables.id')
+            ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
+            ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
+            ->get();
+
+            $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
+
+        return view('admin.reserved_books', ['borrowed_book' => $borrowed_book, 'notifications' => $notifications]);
+
+    }
+
+    function returning_books(){
+        $borrowed_book = DB::table('borrows_table')
+        ->where('borrows_table.status', 'request return')
+            ->join('books_tables', 'borrows_table.book_id', '=', 'books_tables.id')
+            ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
+            ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
+            ->get();
+
+            $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
+
+        return view('admin.reserved_books', ['borrowed_book' => $borrowed_book, 'notifications' => $notifications]);
+
+    }
+
+    function returned_books(){
+        $borrowed_book = DB::table('borrows_table')
+        ->where('borrows_table.status', 'returned')
+            ->join('books_tables', 'borrows_table.book_id', '=', 'books_tables.id')
+            ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
+            ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
+            ->get();
+
+            $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
+
+        return view('admin.reserved_books', ['borrowed_book' => $borrowed_book, 'notifications' => $notifications]);
+
+    }
+
+    function cancelled_borrow() {
+        $borrowed_book = DB::table('borrows_table')
+            ->where('borrows_table.status', 'cancelled')
             ->join('books_tables', 'borrows_table.book_id', '=', 'books_tables.id')
             ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
             ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')

@@ -128,8 +128,6 @@ class web_controller extends Controller
             return redirect()->route('signup')->with('error', 'User not created');
         }
     }
-    
-    
 
     function view_books($id) {
 
@@ -177,12 +175,16 @@ class web_controller extends Controller
         //NAVIGATES TO THE PROFILE PAGE OF THE USER WITH ITS OWN DETAILS
         $user_details = Auth::user();
         $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
-        
-        return view('profile', ['user_details' => $user_details, 'notifications' => $notifications]);
-    }
 
-    function forgot_password() {
-        return view('forgot');
+        $bookmarked = bookmarks::where('user_id', Auth::user()->id)->get();
+        $bookIds = $bookmarked->pluck('book_id');
+        $books = books_table::whereIn('id', $bookIds)->get();
+
+        $user_details = Auth::user();
+        $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
+
+        return view('bookmarks', ['books' => $books, 'user_details' => $user_details, 'notifications' => $notifications]);
+    
     }
 
     function update_profile(Request $request, $id){
@@ -222,11 +224,4 @@ class web_controller extends Controller
         //LOGOUT THE USER AND REDIRECT TO THE LOGIN PAGE WITH SUCCESS MESSAGE
         return redirect()->route('login')->with('success', 'Profile deleted successfully');
     }
-
-    //THE FOLLOWING FUNCTIONS ARE FOR THE FUNCTIONALITY OF RATINGS AND REVIEWS FOR THE BOOK
-
-    
-    
-
-    
 }

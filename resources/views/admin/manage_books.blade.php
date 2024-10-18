@@ -1,11 +1,10 @@
-
 @extends('admin.app')
 @section('title', 'Manage Books')
 @section('content')
-<div class="min-vh-100">
-    <a data-bs-toggle="modal" style="cursor: pointer;" data-bs-target="#add_book">
-        <i class="fa-solid fa-plus me-3"></i><span>Add Book</span>
-    </a>
+<div class="min-vh-100 mt-5">
+    @if(session()->has('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
     
     <div class="modal fade" id="add_book" tabindex="-1" aria-labelledby="add_book_label" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -16,7 +15,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form action="{{route('admin.add_books_post')}}" enctype="multipart/form-data" method="POST">
+                    <form action="{{ route('admin.add_books_post') }}" enctype="multipart/form-data" method="POST">
                         @csrf
                         <div class="row">
                             <!-- Book Cover -->
@@ -56,7 +55,7 @@
 
                                 <!-- Author -->
                                 <div class="form-floating mb-3">
-                                    <input type="text" required name="book_author" class="form-control" minlength="3" maxlength="50" id="floatingAuthor">
+                                    <input type="text" required name="book_author" pattern="^[a-zA-Z\s\.\-]+$" title="The book author must contain only letters, spaces, dashes, and periods." class="form-control" minlength="3" maxlength="50" id="floatingAuthor">
                                     <label for="floatingAuthor">Author:</label>
                                 </div>
 
@@ -72,39 +71,49 @@
                         
                     </form>
                 </div>
-
-                <!-- <div class="modal-footer">
-                            
-                </div> -->
             </div>
         </div>
     </div>
-    <table class="table table-striped">
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Category</th>
-            <th>Status</th>
-            <th>Borrower</th>
-            <th>Manage</th>
-        </tr>
-        @foreach($books as $book)
-            <tr>
-                <td>{{$book->title}}</td>
-                <td>{{$book->author}}</td>
-                <td>{{$book->category}}</td>
-                <td>{{$book->status}}</td>
-                <td></td>
-                <td class="d-flex flex-row">
-                    <a href="{{route('admin.edit_book', $book->id)}}" class="btn btn-primary">Edit</a>
-                    <form class="ms-3" action="{{route('admin.delete_book', $book->id)}}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">DELETE</button>
-                    </form>
-                </td>
-            </tr>
-        @endforeach
-    </table>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('admin.manage_books')}}">Books</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('admin.reserved_books')}}">Pending</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('admin.cancelled_borrow')}}">Cancelled</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('admin.approved_books')}}">Approved</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('admin.rejected_books')}}">Rejected</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('admin.returning_books')}}">Request Return</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('admin.returned_books')}}">Returned</a>
+        </li>
+
+        <li class="nav-item">
+            <a data-bs-toggle="modal" style="cursor: pointer;" data-bs-target="#add_book">
+                <i class="fa-solid fa-plus me-3"></i><span>Add Book</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Table of Books -->
+    @yield('admin.book_contents')
+
 </div>
 @endsection

@@ -1,6 +1,31 @@
 @extends('profile')
 @section('title', 'My Borrows')
 @section('contents')
+<ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('my_borrows')}}">Books</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('my_borrows.pending')}}">Pending</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('my_borrows.cancelled')}}">Cancelled</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('my_borrows.approved')}}">Approved</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('my_borrows.rejected')}}">Rejected</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('my_borrows.returning')}}">Return Books</a>
+        </li>
+    </ul>
     <table class="table">
         <thead>
             <tr>
@@ -31,7 +56,7 @@
                 <td>
                     @if($borrowedBook->status == 'request return')
                         <p class="text-danger">Waiting for approval</p>
-                    @elseif($borrowedBook->status == 'Rejected')
+                    @elseif($borrowedBook->status == 'return rejected')
                         <p class="text-danger" title="The book is not yet confirmed to that it is returned.">Rejected</p>
                     @else
                     {{$borrowedBook->status}}
@@ -52,7 +77,7 @@
                         <input type="hidden" name="book_id" value="{{$borrowedBook->id}}">
                         <button type="submit" class="btn btn-success">Picked Up</button>
                     </form>
-                    @elseif($borrowedBook->status == 'borrowed' || $borrowedBook->status == 'rejected')
+                    @elseif($borrowedBook->status == 'borrowed' || $borrowedBook->status == 'return rejected')
                     <form action="{{route('return',$borrowedBook->id)}}" method="POST">
                         @csrf
                         <input type="hidden" name="book_id" value="{{$borrowedBook->id}}">
