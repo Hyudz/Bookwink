@@ -9,16 +9,28 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('css/dashboard.css') }}">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <style>
-            .modal {
-                z-index: 1060;
-            }
+    .modal {
+        z-index: 1060;
+    }
 
-            .modal-backdrop {
-                display: none;
-                z-index: 100;
-            }
+    .modal-backdrop {
+        display: none;
+        z-index: 100;
+    }
 
-        </style>
+    .notifications-dropdown {
+        width: 300px;
+        height: 500px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .dropdown-item {
+        word-wrap: break-word;
+        white-space: normal; 
+    }
+</style>
+
     </head>
     <body>
         <!--Main Navigation-->
@@ -54,12 +66,6 @@
                     <img src="{{asset('img/logogo.png')}}" alt="logo" height="40" class="d-inline-block align-text-top">
                 </a>
 
-                <!-- Search form -->
-                <!-- <form class="d-none d-md-flex input-group w-auto my-auto">
-                    <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px;" />
-                    <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
-                </form> -->
-
                 <!-- Right links -->
                 <ul class="navbar-nav ms-auto d-flex flex-row">
                     <!-- Notification dropdown -->
@@ -70,11 +76,11 @@
                                 {{$notifications->where('is_read', false)->count()}}
                             </span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                        <ul class="dropdown-menu dropdown-menu-end notifications-dropdown" aria-labelledby="navbarDropdownMenuLink">
                             <li>
                                 @foreach($notifications as $notification)
                                     @if(!$notification->is_read)
-                                        <a class="dropdown-item bg-primary" href="{{route('admin.read_notification',$notification->id)}}">{{$notification->message}}</a>
+                                        <a class="dropdown-item" href="{{route('admin.read_notification', $notification->id)}}">{{$notification->message}}</a>
                                     @endif
                                 @endforeach
                             <li>

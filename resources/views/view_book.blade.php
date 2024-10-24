@@ -19,7 +19,11 @@
                 <!-- Book Actions -->
                 <div class="d-flex flex-column">
                     <!-- Reserve Book Button -->
+                    @if(!$isBorrowed)
                     <button type="button" class="btn btn-secondary mb-2" data-bs-toggle="modal" data-bs-target="#reserveModal">Reserve Book</button>
+                    @elseif($isBorrowed || $isBorrowedByOthers)
+                    <button type="button" disabled class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#reserveModal">Reserve Book</button>
+                    @endif
                     
                     <!-- Reserve Book Modal -->
                     <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">

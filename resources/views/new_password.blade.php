@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Log In</title>
+        <title>Reset Password</title>
         <!-- Favicon -->
         <link href="{{asset('img/logogo.png')}}" rel="icon" type="image/x-icon">
         
@@ -131,10 +131,7 @@
         <form action="{{route('reset_password_post',$token)}}" method="post">
             @csrf
             <input type="hidden" name="token" value="{{$token}}">
-            <div class="form-floating mb-3">
-                <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                <label for="floatingInput">Email:</label>
-            </div>
+            <input type="hidden" name="email" value="{{$email}}">
 
             <div class="form-floating mb-3">
                 <input type="password" name="password" class="form-control" id="floatingInput" placeholder="">

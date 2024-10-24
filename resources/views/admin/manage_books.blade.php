@@ -98,7 +98,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{route('admin.returning_books')}}">Request Return</a>
+            <a class="nav-link" href="{{route('admin.returning_books')}}">Returned Books</a>
         </li>
 
         <li class="nav-item">

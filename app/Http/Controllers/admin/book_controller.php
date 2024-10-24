@@ -22,8 +22,6 @@ class book_controller extends Controller
             'book_author.regex' => 'The book author must contain only letters, spaces, dashes, and periods.',
         ]);
     
-        // Continue processing the request...
-    
         //SQL CODE: INSERT INTO books_table (title, author, category, description, cover, status, rating) VALUES ($request->book_name, $request->book_author, $request->book_category, $request->book_description, $filename, 'available', 0)
 
         $file = $request->file('book_cover');

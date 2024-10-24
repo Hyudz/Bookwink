@@ -27,8 +27,8 @@ class reserve_controller extends Controller
 
         foreach ($admins as $admin) {
             notifs_table::create([
-                'user_id' => $admin->id, // Notify each admin
-                'borrow_id' => $borrow->id, // Use the ID of the created borrow
+                'user_id' => $admin->id, 
+                'borrow_id' => $borrow->id, 
                 'message' => 'A user has requested a reservation',
                 'notification_type' => 'reservation',
                 'is_read' => false,
@@ -58,13 +58,12 @@ class reserve_controller extends Controller
         $admins = users_table::where('user_type', 'admin')->get();
 
         foreach ($admins as $admin) {
-            // Find the existing notification for this reservation
+            
             $cancel_notification = notifs_table::where('borrow_id', $borrow_status->id)
             ->where('user_id', $admin->id)
             ->where('notification_type', 'reservation')
             ->first();
 
-            // If the notification exists, update it with the cancellation message
             if ($cancel_notification) {
                 $cancel_notification->is_read = false; // Reset the read status
                 $cancel_notification->message = Auth::user()->username . ' canceled the reservation for the book: ' . $book->title;
@@ -74,9 +73,8 @@ class reserve_controller extends Controller
         }
 
         //$update_notif = notifs_table::where('borrow_id', $id);
-        
-
-        return redirect()->route('homepage')->with('success', 'Reservation cancelled successfully');
+    
+        return redirect()->route('my_borrows')->with('success', 'Reservation cancelled successfully');
 
     }
 
@@ -91,26 +89,16 @@ class reserve_controller extends Controller
         $borrow_status->save();
 
         $admins = users_table::where('user_type', 'admin')->get();
-        // foreach ($admins as $admin) {
-        //     notifs_table::create([
-        //         'user_id' => $admin->id, // Notify each admin
-        //         'borrow_id' => $borrow_status->id, // Use the ID of the created borrow
-        //         'message' => Auth::user()->username. ' has picked up the book',
-        //         'notification_type' => 'pickup',
-        //         'is_read' => false,
-        //     ]);
-        // }   
 
         foreach ($admins as $admin) {
-            // Find the existing notification for this reservation
+            
             $approved_notification = notifs_table::where('borrow_id', $borrow_status->id)
             ->where('user_id', $admin->id)
             ->where('notification_type', 'approved')
             ->first();
 
-            // If the notification exists, update it with the cancellation message
             if ($approved_notification) {
-                $approved_notification->is_read = false; // Reset the read status
+                $approved_notification->is_read = false; 
                 $approved_notification->message = Auth::user()->username. ' has picked up the book';
                 $approved_notification->notification_type = 'picked up';
                 $approved_notification->save();
@@ -133,30 +121,14 @@ class reserve_controller extends Controller
 
         $admins = users_table::where('user_type', 'admin')->get();
 
-        // foreach ($admins as $admin) {
-        //     // Find the existing notification for this reservation
-        //     $return_notification = notifs_table::where('borrow_id', $borrow_status->id)
-        //     ->where('user_id', $admin->id)
-        //     ->where('notification_type', 'pickup')
-        //     ->first();
-
-        //     // If the notification exists, update it with the cancellation message
-        //     if ($return_notification) {
-        //         $return_notification->is_read = false; // Reset the read status
-        //         $return_notification->message = 'New Return Book Request: ' . Auth::user()->username;
-        //         $return_notification->notification_type = 'return request'; // Update the type if needed
-        //         $return_notification->save();
-        //     }
-        // }
 
         foreach ($admins as $admin) {
-            // Find the existing notification for this reservation
+
             $return_notification = notifs_table::where('borrow_id', $borrow_status->id)
             ->where('user_id', $admin->id)
             ->where('notification_type', 'picked up')
             ->first();
 
-            // If the notification exists, update it with the cancellation message
             if ($return_notification) {
                 $return_notification->is_read = false; // Reset the read status
                 $return_notification->message = 'New Return Book Request: ' . Auth::user()->username;
@@ -185,6 +157,7 @@ class reserve_controller extends Controller
         ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
         ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
         ->where('users_tables.id', Auth::user()->id)
+        ->orderBy('borrows_table.created_at', 'DESC')
         ->get();
 
         $user_details = Auth::user();
@@ -203,6 +176,7 @@ class reserve_controller extends Controller
         // FROM borrows_table
         // INNER JOIN books_tables ON borrows_table.book_id = books_tables.id
         // INNER JOIN users_tables ON borrows_table.user_id = users_tables.id;
+        // ORDER BY borrows_table.created_at DESC
 
         $borrowedBooks = DB::table('borrows_table')
         ->where('borrows_table.status', 'approved')
@@ -210,6 +184,7 @@ class reserve_controller extends Controller
         ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
         ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
         ->where('users_tables.id', Auth::user()->id)
+        ->orderBy('borrows_table.created_at', 'DESC')
         ->get();
 
         $user_details = Auth::user();
@@ -226,6 +201,7 @@ class reserve_controller extends Controller
         ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
         ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
         ->where('users_tables.id', Auth::user()->id)
+        ->orderBy('borrows_table.created_at', 'DESC')
         ->get();
 
         $user_details = Auth::user();
@@ -241,6 +217,7 @@ class reserve_controller extends Controller
         ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
         ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
         ->where('users_tables.id', Auth::user()->id)
+        ->orderBy('borrows_table.created_at', 'DESC')
         ->get();
 
         $user_details = Auth::user();
@@ -256,6 +233,7 @@ class reserve_controller extends Controller
         ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
         ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
         ->where('users_tables.id', Auth::user()->id)
+        ->orderBy('borrows_table.created_at', 'DESC')
         ->get();
 
         $user_details = Auth::user();
@@ -273,6 +251,7 @@ class reserve_controller extends Controller
         ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
         ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
         ->where('users_tables.id', Auth::user()->id)
+        ->orderBy('borrows_table.created_at', 'DESC')
         ->get();
 
         $user_details = Auth::user();

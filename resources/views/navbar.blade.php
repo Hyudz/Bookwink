@@ -31,7 +31,9 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                             <li>
                                 @foreach($notifications as $notification)
-                                    <a class="dropdown-item" href="{{route('my_borrows')}}">{{$notification->message}}</a>
+                                    @if(!$notification->is_read)
+                                        <a class="dropdown-item" href="{{route('my_borrows')}}">{{$notification->message}}</a>
+                                    @endif
                                 @endforeach
                             <li>
                         </ul>

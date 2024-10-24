@@ -11,7 +11,11 @@
                 <th scope="col">Pickup Date </th>
                 <th scope="col">Return Date</th>
                 <th scope="col">Status</th>
-                <th scope="col">Action</th>
+                @foreach($borrowed_book as $book)
+                    @if(!$book->status == 'pending' || $book->status == 'request return')
+                        <th scope="col">Action</th>
+                    @endif
+                @endforeach
             </tr>
         </thead>
         <tbody>
@@ -24,8 +28,8 @@
                 <td>{{$book->borrow_date}}</td>
                 <td>{{$book->return_date}}</td>
                 <td>{{$book->status}}</td>
-                <td class="d-flex flex-row">
-                    @if($book->status == 'pending')
+                @if($book->status == 'pending')
+                    <td class="d-flex flex-row">
                         <form action="{{route('admin.reject_reservation', $book->id)}}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-danger">Disapprove</button>
@@ -35,7 +39,9 @@
                             @csrf
                             <button type="submit" class="btn btn-success">Approve</button>
                         </form>
-                    @elseif($book->status == 'request return')
+                    </td>
+                @elseif($book->status == 'request return')
+                    <td class="d-flex flex-row">
                         <form action="{{route('admin.approve_return', $book->id)}}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-success">Approve Return</button>
@@ -45,10 +51,9 @@
                             @csrf
                             <button type="submit" class="btn btn-danger">Disapprove Return</button>
                         </form>
-                    @else
-                        <!-- No actions  -->
-                    @endif
-                </td>
+                    </td>
+                @endif
+                
             </tr>
             @endforeach
         </tbody>

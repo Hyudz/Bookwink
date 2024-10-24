@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Log In</title>
+        <title>Forgot Password</title>
         <!-- Favicon -->
         <link href="{{asset('img/logogo.png')}}" rel="icon" type="image/x-icon">
         
@@ -126,7 +126,7 @@
                     </form>
 
                     <div class="sign-up mt-4">
-                        <a href="{{route('signup')}}">
+                        <a href="{{route('login')}}">
                             Back to Login
                         </a>
                     </div>

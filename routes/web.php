@@ -29,8 +29,8 @@ Route::post('/signup', [web_controller::class,'signup_post']) -> name('signup_po
 
 Route::get('/forgot_password', [forget_password_controller::class,'forgot_password']) -> name('forgot_password');
 Route::post('/forgot_password', [forget_password_controller::class,'forgot_password_post']) -> name('forgot_password_post');
-Route::get('/reset_password/{token}', [forget_password_controller::class,'reset_password']) -> name('reset_password');
-Route::post('/reset_password/{token}', [forget_password_controller::class,'reset_password_post']) -> name('reset_password_post');
+Route::get('/reset_password/{token}/{email}', [forget_password_controller::class,'reset_password']) -> name('reset_password');
+Route::post('/reset_password', [forget_password_controller::class,'reset_password_post']) -> name('reset_password_post');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', [web_controller::class,'home']) -> name('home');

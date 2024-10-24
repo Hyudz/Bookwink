@@ -26,12 +26,11 @@ class admin_controller extends Controller
     }
 
     function read_notification($id) {
-        // Step 1: Mark the notification as read
+
         $notification = notifs_table::find($id);
         $notification->is_read = true;
         $notification->save();
 
-        // Step 2: Join tables to fetch detailed notification information
         $notifications = DB::table('notifs_tables')
             ->join('borrows_table', 'notifs_tables.borrow_id', '=', 'borrows_table.id')
             ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
@@ -54,25 +53,9 @@ class admin_controller extends Controller
             ->where('notifs_tables.id', $id)
             ->get();
 
-            //dd($notifications);
-
-        // Step 3: Pass the data to the view
         return view('admin.notifs_content', ['notifications' => $notifications]);
     }
 
-
-    // function export_data1(){
-    //     $fileName = 'bookwink.sql';
-    
-    //     // Construct the `mysqldump` command
-    //     $command = "mysqldump --u=root --p=bookwink > {$fileName}";
-    
-    //     // Execute the command
-    //     system($command);
-
-    //     // Provide the download to the user
-    //     return response()->download($fileName)->deleteFileAfterSend(true);
-    // }
 
     function export_data() {
         // Export books to CSV

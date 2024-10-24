@@ -76,12 +76,10 @@ class web_controller extends Controller
 
     function signup_post(Request $request) {
 
-        // Calculate age based on the birthday input
         $birthday = new \DateTime($request->birthday);
         $today = new \DateTime();
         $age = $today->diff($birthday)->y;
-    
-        // Set the minimum age requirement
+
         $minimumAge = 13;
     
         // VALIDATE THE REQUEST
@@ -94,8 +92,7 @@ class web_controller extends Controller
             'address' => 'required',
             'phone_number' => 'required'
         ]);
-    
-        // Check if the user meets the minimum age requirement
+
         if ($age < $minimumAge) {
             return redirect()->route('signup')->withErrors(['birthday' => 'You must be at least ' . $minimumAge . ' years old to sign up.']);
         }
@@ -158,8 +155,13 @@ class web_controller extends Controller
         //dd($isBorrowed);
 
         $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
+
+        $isBorrowedByOthers = borrows_table::where('book_id', $id)
+        ->where('user_id', '!=', Auth::user()->id) // Exclude current user
+        ->whereIn('status', ['pending', 'borrowed']) // Specify borrowed statuses
+        ->exists();
         
-        return view('view_book', ['book' => $book, 'isBookmarked' => $isBookmarked, 'reviews' => $reviews, 'isReviewed' => $isReviewed, 'isBorrowed' => $isBorrowed, 'notifications' => $notifications]);
+        return view('view_book', ['book' => $book, 'isBookmarked' => $isBookmarked, 'reviews' => $reviews, 'isReviewed' => $isReviewed, 'isBorrowed' => $isBorrowed, 'notifications' => $notifications, 'isBorrowedByOthers' => $isBorrowedByOthers]);
     }
 
     function services() {

@@ -15,17 +15,19 @@
                 </div>
             @else
             @foreach($books as $book)
-            <div class="col-md-3">
-                <a href="{{route('view_books', $book->id)}}" style="text-decoration: none;">
-                    <div class="card mt-5">
-                        <img class="card-img-top" style="height: 200px; object-fit: cover;" src="{{asset('uploads/'.$book->cover)}}" alt="book image">
-                        <div class="card-body">
-                            <h5 class="card-title" id="book">{{$book->title}}</h5>
-                        </div>
+                    <div class="col-md-3">
+                        <a href="{{ route('view_books', $book->id) }}" style="text-decoration: none;">
+                            <div class="book-card mt-3">
+                                <img src="{{ asset('uploads/' . $book->cover) }}" style="object-fit: cover;" class="bg-image">
+                                
+                                <div class="gradient-overlay">
+                                    <h5 class="overlay-title">{{ $book->title }}</h5>
+                                    <h6 class="overlay-author">{{ $book->author }}</h6>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
-            @endforeach
+                @endforeach
             @endif
 
             </div>

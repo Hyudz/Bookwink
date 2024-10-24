@@ -99,25 +99,14 @@ class review_controller extends Controller
 
     function delete_review($id){
 
-        // Find the review by its ID
         $review = rrs_table::find($id);
-    
-        // Store the book_id before deleting the review
         $book_id = $review->book_id;
-    
-        // Delete the review
         $review->delete();
     
-        // Count the number of users who rated the book
         $usersRated = rrs_table::where('book_id', $book_id)->count();
-    
-        // Sum all the ratings of the book
         $sumRatings = rrs_table::where('book_id', $book_id)->sum('rating');
-    
-        // Compute the average rating of the book, ensuring no division by zero
         $averageRating = $usersRated > 0 ? $sumRatings / $usersRated : 0;
-    
-        // Update the average rating of the book
+
         $book = books_table::find($book_id);
         $book->update([
             'rating' => $averageRating,

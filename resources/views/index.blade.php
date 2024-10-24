@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Bookwink: Discover books, ebooks, and more. Empowering minds since 1902.">
-    <title>Landing Page</title>
+    <title>Bookwink</title>
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link href="https://fonts.googleapis.com/css2?family=Baskerville&display=swap" rel="stylesheet">
 </head>
@@ -37,7 +37,24 @@
             
             <section class="books-section">
                 <div class="book-columns">
-                    <div class="book-column" data-description="Description for My Hero Academia: Team-Up Missions">
+
+                    {{$limit = 0}}
+
+                    @foreach($books as $book)
+                    
+                    @if($limit == 6)
+                        @break
+                    @endif
+                    <div class="book-column" data-description="{{$book->description}}">
+                        <img src="{{asset('uploads/'.$book->cover)}}" alt="Book Cover" onclick="openModal(0)">
+                        <h3>{{$book->title}}</h3>
+                        <button class="read-more" onclick="redirectToSignIn()">Read More</button>
+                    </div>
+                    {{$limit++}}
+                    @endforeach
+
+
+                    <!-- <div class="book-column" data-description="Description for My Hero Academia: Team-Up Missions">
                         <img src="{{asset('uploads/1728669488.jpg')}}" alt="Book 1" onclick="openModal(0)">
                         <h3>My Hero Academia: Team-Up Missions</h3>
                         <button class="read-more" onclick="redirectToSignIn()">Read More</button>
@@ -69,7 +86,7 @@
                         <img src="{{asset('uploads/1728670081.jpg')}}" alt="Book 6" onclick="openModal(0)">
                         <h3>Gokurakugai, Vol. 1</h3>
                         <button class="read-more" onclick="redirectToSignIn()">Read More</button>
-                    </div>
+                    </div> -->
                     
                 </div>
     

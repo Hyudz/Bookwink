@@ -13,10 +13,13 @@ use Illuminate\Support\Facades\Mail;
 class forget_password_controller extends Controller
 {
     function forgot_password() {
+        //ETO YUNG PAG CLICK NG FORGOT PASSWORD
         return view('forgot');
     }
 
     function forgot_password_post(Request $request){
+
+        //ETO NAMAN YUNG FUNCTION PAG PININDOT YUNG SUBMIT AFTER MAG-INPUT NG EMAIL
 
         $request -> validate([
             'email' => 'required|email|exists:users_tables,email',
@@ -30,7 +33,7 @@ class forget_password_controller extends Controller
             'created_at' => Carbon::now(),
         ]);
 
-        Mail::send("emails.forget-password", ['token' => $token], function ($message) use ($request) {
+        Mail::send("emails.forget-password", ['token' => $token, 'email' => $request->email], function ($message) use ($request) {
             $message->to($request->email);
             $message->subject('Reset your password');
         });
@@ -39,13 +42,14 @@ class forget_password_controller extends Controller
 
     }
 
-    function reset_password($token) {
-        return view('new_password', compact('token'));
+    function reset_password($token, $email) {
+        //ETO YUNG FUNCTION PAG NAG-CLICK YUNG USER SA LINK NA NAKA-EMAIL SA KANYA
+        return view('new_password', compact('token', 'email'));
     }
 
     function reset_password_post(Request $request) {
+        //ETO NAMAN YUNG SA CHANGE PASSWORD NG USER
         $request -> validate([
-            "email" => "required|email|exists:users_tables,email",
             "password" => "required|string|min:6|confirmed",
             "password_confirmation" => "required",
         ]);
@@ -55,13 +59,13 @@ class forget_password_controller extends Controller
             ->first();
 
         if (!$updatePassword) {
-            return redirect()->to(route('forgot_password'))->with('message', 'Invalid token!');
+            return redirect()->to(route('forgot_password'))->with('error', 'Invalid token!');
         }
 
         users_table::where('email', $request->email)->update(['password' => Hash::make($request->password)]);
 
         DB::table('password_resets')->where(['email'=> $request->email])->delete();
-        return redirect()->to(route('login'))->with('message', 'Your password has been changed!');
+        return redirect()->to(route('login'))->with('success', 'Your password has been changed!');
 
     }
 }
