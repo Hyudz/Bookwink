@@ -27,10 +27,9 @@
                             <p><strong>Message:</strong> Return request rejected.</p>
                             @elseif($notification->notification_type == 'picked up')
                             <p><strong>Message:</strong> Book has been picked up by the user.</p>
+                            @elseif($notification->notification_type == 'extend')
+                            <p><strong>Message:</strong> The user requested to extend the borrow date.</p>
                             @endif
-                        </div>
-                        <div>
-                            <img src="{{ asset('uploads/' . $notification->book_cover) }}" alt="Book Cover" class="img-fluid" style="height: 120px; width: auto;">
                         </div>
                     </div>
 
@@ -43,12 +42,12 @@
                     </div>
 
                     @if($notification->notification_type == 'reservation')
-                    <div class="d-flex">
+                    <div class="d-flex justify-content-end mt-3">
                         <form action="{{ route('admin.reject_reservation', $notification->borrow_id) }}" method="POST">
                             @csrf
-                            <button type="submit" class="btn btn-danger">Disapprove</button>
+                            <button type="submit" class="btn btn-danger me-2">Disapprove</button>
                         </form>
-                        <form class="ms-3" action="{{ route('admin.approve_reservation', $notification->borrow_id) }}" method="POST">
+                        <form action="{{ route('admin.approve_reservation', $notification->borrow_id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="book_id" value="{{ $notification->borrow_id }}">
                             <button type="submit" class="btn btn-success">Approve</button>
@@ -56,18 +55,32 @@
                     </div>
                     
                     @elseif($notification->notification_type == 'return request')
-                    <div class="d-flex">
+                    <div class="d-flex justify-content-end mt-3">
                         <form action="{{ route('admin.approve_return', $notification->borrow_id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="book_id" value="{{ $notification->borrow_id }}">
-                            <button type="submit" class="btn btn-success">Approve Return</button>
+                            <button type="submit" class="btn btn-success me-2">Approve Return</button>
                         </form>
-                        <form class="ms-3" action="{{ route('admin.reject_return', $notification->borrow_id) }}" method="POST">
+                        <form action="{{ route('admin.reject_return', $notification->borrow_id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="book_id" value="{{ $notification->borrow_id }}">
                             <button type="submit" class="btn btn-danger">Disapprove Return</button>
                         </form>
                     </div>
+                    @elseif($notification->notification_type == 'extend')
+                    <div class="d-flex justify-content-end mt-3">
+                        <form action="{{ route('admin.approve_extend', $notification->borrow_id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="book_id" value="{{ $notification->borrow_id }}">
+                            <button type="submit" class="btn btn-success me-2">Approve Extension</button>
+                        </form>
+                        <form action="{{ route('admin.reject_extend', $notification->borrow_id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="book_id" value="{{ $notification->borrow_id }}">
+                            <button type="submit" class="btn btn-danger">Reject Extension</button>
+                        </form>
+                    </div>
+
                     @endif
                     @endforeach
                 </div>

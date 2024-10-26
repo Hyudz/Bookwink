@@ -94,7 +94,9 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                             <!-- <li><a class="dropdown-item" href="#">My profile</a></li> -->
-                            <li><a class="dropdown-item" href="#">Change Password</a></li>
+                            <li>
+                                <span class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reserveModal">Change Password</span>
+                            </li>
                             <li><a class="dropdown-item" href="{{route('logout')}}">Logout</a></li>
                         </ul>
                     </li>
@@ -108,6 +110,33 @@
         <!--Main layout-->
         <main style="margin-top: 58px;">
             <div class="container pt-4">
+                <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="reserveModalLabel"> Change Password </h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            <form action="{{route('change_password')}}" method="post">
+                                @csrf
+                                
+                                <div class="form-floating mb-3">
+                                    <input type="password" name="password" class="form-control" id="floatingInput" placeholder="">
+                                    <label for="floatingInput">Enter new password:</label>
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    <input type="password" name="password_confirmation" class="form-control" id="floatingInput" placeholder="">
+                                    <label for="floatingInput">Confirm new Password:</label>
+                                </div>
+                                <button type="submit" class="btn btn-secondary mt-4 w-50">Submit</button>
+                            </form>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 @yield('content')
             </div>
         </main>

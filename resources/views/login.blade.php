@@ -86,9 +86,13 @@
 
         <!-- Page Content -->
         <div class="flex-grow-1 d-flex justify-content-center align-items-center mt-5">
-            <!-- Flash Messages -->
-            <div class="mt-5">
+
+            <!-- Login Form -->
+            <div class="form-container">
+                <h1>Welcome Back!</h1>
+                <div>
                 @if($errors->any())
+                <div>
                     <div class="col-12">
                         @foreach($errors->all() as $error)
                             <div class="alert alert-danger">{{$error}}</div>
@@ -105,10 +109,6 @@
                     <div class="alert alert-success">{{session('success')}}</div>
                 @endif
             </div>
-
-            <!-- Login Form -->
-            <div class="form-container">
-                <h1>Welcome Back!</h1>
                 <form action="{{route('login_post')}}" method="post">
                     @csrf
                     <div class="form-floating mb-3">

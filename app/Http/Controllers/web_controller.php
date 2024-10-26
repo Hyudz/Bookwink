@@ -151,15 +151,15 @@ class web_controller extends Controller
         $isReviewed = $reviewIds->contains($id);
 
         //SELECT * FROM BORROWS_TABLE WHERE USER_ID = Auth::user()->id AND BOOK_ID = $id
-        $isBorrowed = borrows_table::where('user_id', Auth::user()->id)->where('book_id', $id)->where('status', 'pending')->get();
+        $isBorrowed = borrows_table::where('user_id', Auth::user()->id)->where('book_id', $id)->where('status', 'pending')->exists();
+
+        $isBorrowedByOthers = borrows_table::where('book_id', $id)
+        ->where('status', 'approved')
+        ->where('user_id', '!=', Auth::user()->id)
+        ->exists();
         //dd($isBorrowed);
 
         $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
-
-        $isBorrowedByOthers = borrows_table::where('book_id', $id)
-        ->where('user_id', '!=', Auth::user()->id) // Exclude current user
-        ->whereIn('status', ['pending', 'borrowed']) // Specify borrowed statuses
-        ->exists();
         
         return view('view_book', ['book' => $book, 'isBookmarked' => $isBookmarked, 'reviews' => $reviews, 'isReviewed' => $isReviewed, 'isBorrowed' => $isBorrowed, 'notifications' => $notifications, 'isBorrowedByOthers' => $isBorrowedByOthers]);
     }

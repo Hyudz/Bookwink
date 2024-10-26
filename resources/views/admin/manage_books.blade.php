@@ -2,9 +2,25 @@
 @section('title', 'Manage Books')
 @section('content')
 <div class="min-vh-100 mt-5">
-    @if(session()->has('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+        <div class="mt-5">
+            <div>
+                @if($errors->any())
+                    <div class="col-12">
+                        @foreach($errors->all() as $error)
+                            <div class="alert alert-danger">{{$error}}</div>
+                        @endforeach
+                    </div>
+            </div>
+            @endif
+
+            @if(session()->has('error'))
+                <div class="alert alert-danger">{{session('error')}}</div>
+            @endif
+
+            @if(session()->has('success'))
+                <div class="alert alert-success">{{session('success')}}</div>
+            @endif
+        </div>
     
     <div class="modal fade" id="add_book" tabindex="-1" aria-labelledby="add_book_label" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -40,13 +56,35 @@
                                     <!-- Book Category -->
                                     <div class="col-md-6">
                                         <div class="form-floating mb-3">
-                                            <select class="form-select" name="book_category" id="floatingCategory">
-                                                <option selected>Category:</option>
+                                            <select class="form-select" name="book_category" id="floatingCategory" aria-label="Select a book Category">
+                                                <option selected disabled></option>
                                                 <option value="Fiction">Fiction</option>
                                                 <option value="Sci-Fi">Science-Fiction</option>
                                                 <option value="Science">Science</option>
                                                 <option value="Romance">Romance</option>
                                                 <option value="Mystery">Mystery</option>
+                                                <option value="Non-Fiction">Non-Fiction</option>
+                                                <option value="Biography">Biography</option>
+                                                <option value="Historical Fiction">Historical Fiction</option>
+                                                <option value="Fantasy">Fantasy</option>
+                                                <option value="Self-Help">Self-Help</option>
+                                                <option value="Thriller">Thriller</option>
+                                                <option value="Adventure">Adventure</option>
+                                                <option value="Young Adult">Young Adult</option>
+                                                <option value="Manga">Manga</option>
+                                                <option value="Education">Education</option>
+                                                <!-- <option value="Poetry">Poetry</option>
+                                                <option value="Graphic Novels">Graphic Novels</option>
+                                                <option value="Horror">Horror</option>
+                                                <option value="Philosophy">Philosophy</option>
+                                                <option value="Health and Wellness">Health and Wellness</option>
+                                                <option value="Travel">Travel</option>
+                                                <option value="Cooking">Cooking</option>
+                                                <option value="Children">Children</option>
+                                                <option value="Art">Art</option>
+                                                <option value="Dark Fantasy">Dark Fantasy</option>
+                                                <option value="Manhua">Manhua</option>
+                                                <option value="Webtoon">Webtoon</option> -->
                                             </select>
                                             <label for="floatingCategory">Category:</label>
                                         </div>
@@ -103,6 +141,10 @@
 
         <li class="nav-item">
             <a class="nav-link" href="{{route('admin.returned_books')}}">Returned</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('admin.extension_request')}}">Extension Requests</a>
         </li>
 
         <li class="nav-item">

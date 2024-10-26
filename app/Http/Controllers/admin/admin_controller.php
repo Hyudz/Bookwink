@@ -9,6 +9,7 @@ use App\Models\users_table;
 use Illuminate\Http\Request;
 use App\Models\notifs_table;
 use App\Models\rrs_table;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -53,6 +54,8 @@ class admin_controller extends Controller
             ->where('notifs_tables.id', $id)
             ->get();
 
+        
+
         return view('admin.notifs_content', ['notifications' => $notifications]);
     }
 
@@ -85,5 +88,23 @@ class admin_controller extends Controller
         fclose($fileBooks);
 
         return response()->download($fileNameBooks)->deleteFileAfterSend(true);
+    }
+
+    function change_password_post(Request $request) {
+        
+        $request->validate([
+            'password' => 'required|min:8|confirmed',
+        ]);
+    
+        $user = users_table::find(Auth::user()->id);
+        
+        if ($user) {
+            $user->password = Hash::make($request->password);
+            $user->save();
+    
+            return back()->with('success', 'Password changed successfully.');
+        }
+    
+        return back()->withErrors(['user_not_found' => 'User not found.']);
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\books_table;
 use App\Models\borrows_table;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\notifs_table;
 use App\Models\users_table;
@@ -47,6 +48,26 @@ class requests_controller extends Controller
             'notification_type' => 'approval',
             'message' => 'Your request to borrow the book ' . $book->title . ' has been approved'
         ]);
+
+        //auto reject the other request with the same book
+
+        $other_requests = borrows_table::where('book_id', $borrow->book_id)
+        ->where('status', 'pending')
+        ->get();
+
+        foreach ($other_requests as $request) {
+            $request->status = 'rejected';
+            $request->save(); 
+
+            notifs_table::create([
+                'user_id' => $request->user_id,
+                'borrow_id' => $request->id,
+                'is_read' => false,
+                'notification_type' => 'rejection',
+                'message' => 'The book "' . $book->title . '" has been borrowed by another user.'
+            ]);
+        }
+
 
         DB::table('notifs_tables')->where('borrow_id', $borrow->id)->where('notification_type', 'reservation')->update(['notification_type' => 'approved']);
 
@@ -186,5 +207,94 @@ class requests_controller extends Controller
         }
 
         return redirect()->route('admin.reserved_books')->with('success', 'Return rejected successfully');
+    }
+
+    function approve_extend($id) {
+
+        //IF THE USER REQUESTED TO EXTEND THE BORROWING OF THE BOOK, THE ADMIN WILL APPROVE THE EXTENSION
+
+        //SQL CODE: UPDATE borrows_table SET status = 'extended' WHERE id = $id
+        $borrow = borrows_table::find($id);
+        $borrow->status = 'extended';
+        $borrow->save();
+
+        //SQL CODE: UPDATE books_table SET status = 'reserved' WHERE id = $borrow->book_id
+        $book = books_table::find($borrow->book_id);
+        $book->status = 'reserved';
+        $book->save();
+
+        $notify_user = notifs_table::where('borrow_id', $borrow->id)
+        ->where('user_id', $borrow->user_id)
+        ->where('notification_type', 'approval')
+        ->first();
+
+        if ($notify_user) {
+            $notify_user->is_read = false; // Reset the read status
+            $notify_user->message = 'Your request to extend the borrowing of the book ' . $book->title . ' has been approved';
+            $notify_user->notification_type = 'extended';
+            $notify_user->save();
+        }
+
+        //update din yung notification sa admin side
+
+        $admins = users_table::where('id', Auth::user()->id)->first();
+        $update_admin = notifs_table::where('borrow_id', $borrow->id)
+        ->where('user_id', $admins->id)
+        ->where('notification_type', 'extend request')
+        ->first();
+
+        if ($update_admin) {
+            $update_admin->is_read = false; // Reset the read status
+            $update_admin->message = 'You approved the extension request.';
+            $update_admin->notification_type = 'extended';
+            $update_admin->save();
+        }
+
+        return redirect()->route('admin.reserved_books')->with('success', 'Extension approved successfully');
+    }
+
+    function reject_extend($id) {
+
+        //QUITE THE OPPOSITE
+
+        //SQL CODE: UPDATE borrows_table SET status = 'rejected' WHERE id = $id
+        $borrow = borrows_table::find($id);
+        $borrow->status = 'extension rejected';
+        $borrow->return_date = Carbon::parse($borrow->return_date)->subDays(7);
+        $borrow->save();
+
+        //SQL CODE: UPDATE books_table SET status = 'reserved' WHERE id = $borrow->book_id
+        $book = books_table::find($borrow->book_id);
+        $book->status = 'reserved';
+        $book->save();
+
+        $notify_user = notifs_table::where('borrow_id', $borrow->id)
+        ->where('user_id', $borrow->user_id)
+        ->where('notification_type', 'approval')
+        ->first();
+
+        if ($notify_user) {
+            $notify_user->is_read = false; // Reset the read status
+            $notify_user->message = 'Your request to extend the borrowing of the book ' . $book->title . ' has been rejected';
+            $notify_user->notification_type = 'extend request';
+            $notify_user->save();
+        }
+
+        //update din yung notification sa admin side
+
+        $admins = users_table::where('id', Auth::user()->id)->first();
+        $update_admin = notifs_table::where('borrow_id', $borrow->id)
+        ->where('user_id', $admins->id)
+        ->where('notification_type', 'extend request')
+        ->first();
+
+        if ($update_admin) {
+            $update_admin->is_read = false; // Reset the read status
+            $update_admin->message = 'Your request to extend the borrowing of the book ' . $book->title . ' has been rejected';
+            $update_admin->notification_type = 'extend request';
+            $update_admin->save();
+        }
+
+        return redirect()->route('admin.reserved_books')->with('success', 'Extension rejected successfully');
     }
 }

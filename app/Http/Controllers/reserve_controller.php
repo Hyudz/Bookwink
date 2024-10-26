@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\notifs_table;
 use App\Models\users_table;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class reserve_controller extends Controller
@@ -259,5 +260,54 @@ class reserve_controller extends Controller
 
         return view('my_borrows', ['borrowedBooks' => $borrowedBooks, 'user_details' => $user_details, 'notifications' => $notifications]);
 
+    }
+
+    function extend_book(){
+        $borrowedBooks = DB::table('borrows_table')
+        ->where('borrows_table.status', 'extend')
+        ->orWhere('borrows_table.status', 'borrowed')
+        ->join('books_tables', 'borrows_table.book_id', '=', 'books_tables.id')
+        ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
+        ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
+        ->where('users_tables.id', Auth::user()->id)
+        ->orderBy('borrows_table.created_at', 'DESC')
+        ->get();
+
+        $user_details = Auth::user();
+        $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
+
+        return view('my_borrows', ['borrowedBooks' => $borrowedBooks, 'user_details' => $user_details, 'notifications' => $notifications]);
+    }
+
+    function request_extend($id) {
+         //ETO YUNG MAG NONOTIFY SI ADMIN IF GUSTO MAG EXTEND NI CLIENT SA PAG HIRAM NG BOOK
+
+        //SQL CODE: UPDATE BORROWS_TABLE SET STATUS = 'request return' WHERE ID = $id
+        $borrow_status = borrows_table::findorFail($id);
+        $borrow_status-> status = 'extend';
+        $borrow_status->return_date = Carbon::parse($borrow_status->return_date)->addDays(7);
+        $borrow_status->save();
+
+        $book = books_table::find($borrow_status->book_id);
+
+        $admins = users_table::where('user_type', 'admin')->get();
+
+
+        foreach ($admins as $admin) {
+
+            $return_notification = notifs_table::where('borrow_id', $borrow_status->id)
+            ->where('user_id', $admin->id)
+            ->where('notification_type', 'picked up')
+            ->first();
+
+            if ($return_notification) {
+                $return_notification->is_read = false; 
+                $return_notification->message = 'New Extend Book Request: ' . Auth::user()->username;
+                $return_notification->notification_type = 'extend';
+                $return_notification->save();
+            }
+        }
+
+        return redirect()->route('my_borrows')->with('success', 'Book returned successfully');
     }
 }

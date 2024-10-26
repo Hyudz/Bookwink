@@ -28,7 +28,7 @@ class book_controller extends Controller
         $filename = time() . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('uploads'), $filename);
 
-        books_table::create([
+        $book = books_table::create([
             'title' => $request->book_name,
             'author' => $request->book_author,
             'category' => $request->book_category,
@@ -37,8 +37,13 @@ class book_controller extends Controller
             'status' => 'available',
             'rating' => 0,
         ]);
-    
-        return redirect()->route('admin.manage_books')->with('success', 'Book added successfully');
+
+        if ($book) {
+            return redirect()->route('admin.manage_books')->with('success', 'Book added successfully');
+        } else {
+            return redirect()->route('admin.manage_books')->with('error', 'Failed to add book');
+        }
+
     }
     
 
@@ -57,6 +62,7 @@ class book_controller extends Controller
             'book_name' => 'required|max:100',
             'book_author' => 'required|max:40', 'regex:/^[a-zA-Z\s\.\-]+$/',
             'book_category' => 'required',
+            'book_status' => 'required',
             'book_description' => 'required|max:65535',
             'book_cover' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
         ], [
@@ -66,6 +72,7 @@ class book_controller extends Controller
         $book = books_table::find($request->id);
         $book->title = $request->book_name;
         $book->author = $request->book_author;
+        $book->status = $request->book_status;
         $book->category = $request->book_category;
         $book->description = $request->book_description;
     
@@ -182,6 +189,19 @@ class book_controller extends Controller
     function cancelled_borrow() {
         $borrowed_book = DB::table('borrows_table')
             ->where('borrows_table.status', 'cancelled')
+            ->join('books_tables', 'borrows_table.book_id', '=', 'books_tables.id')
+            ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
+            ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')
+            ->get();
+
+            $notifications = DB::table('notifs_tables')->where('user_id', Auth::user()->id)->get();
+
+        return view('admin.reserved_books', ['borrowed_book' => $borrowed_book, 'notifications' => $notifications]);
+    }
+
+    function extend_book() {
+        $borrowed_book = DB::table('borrows_table')
+            ->where('borrows_table.status', 'extend')
             ->join('books_tables', 'borrows_table.book_id', '=', 'books_tables.id')
             ->join('users_tables', 'borrows_table.user_id', '=', 'users_tables.id')
             ->select('borrows_table.*', 'books_tables.title', 'users_tables.username')

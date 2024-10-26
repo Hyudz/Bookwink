@@ -12,6 +12,8 @@
             @include('admin/navbar')
         </nav>
 
+        <!-- THIS PAGE IS NOT USED SINCE IT WAS MOVED IN A MODAL -->
+
         <form class="mt-5 d-flex" action="{{route('admin.edit_book_post',$book->id)}}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="ms-5 bg-primary">

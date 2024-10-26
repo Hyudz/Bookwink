@@ -7,9 +7,10 @@
         @endphp
 
         @foreach($booksByCategory as $category => $books)
-        <div class="category-title m-3 text-white text-center p-3" style="background-color: #835D1C;">
+            <div class="category-title m-3 text-white text-center p-3" style="background-color: #835D1C;">
                 <h3 class="m-0">{{ strtoupper($category) }}</h3>
             </div>
+            
             <div class="row">
 
                 @foreach($books as $book)

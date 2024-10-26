@@ -38,19 +38,24 @@
             <section class="books-section">
                 <div class="book-columns">
 
-                    {{$limit = 0}}
+                    @php 
+                        $limit = 0; 
+                    @endphp
 
                     @foreach($books as $book)
                     
-                    @if($limit == 6)
-                        @break
-                    @endif
-                    <div class="book-column" data-description="{{$book->description}}">
-                        <img src="{{asset('uploads/'.$book->cover)}}" alt="Book Cover" onclick="openModal(0)">
-                        <h3>{{$book->title}}</h3>
-                        <button class="read-more" onclick="redirectToSignIn()">Read More</button>
-                    </div>
-                    {{$limit++}}
+                        @if($limit == 6)
+                            @break
+                        @endif
+                        <div class="book-column" data-description="{{$book->description}}">
+                            <img src="{{asset('uploads/'.$book->cover)}}" alt="Book Cover" onclick="openModal(0)">
+                            <h3>{{$book->title}}</h3>
+                            <button class="read-more" onclick="redirectToSignIn()">Read More</button>
+                        </div>
+                        
+                        @php
+                            $limit++
+                        @endphp
                     @endforeach
 
 

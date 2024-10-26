@@ -9,7 +9,7 @@
                 <th scope="col">Author</th>
                 <th scope="col">Reserved By</th>
                 <th scope="col">Pickup Date </th>
-                <th scope="col">Return Date</th>
+                <th scope="col">Due Date</th>
                 <th scope="col">Status</th>
                 @foreach($borrowed_book as $book)
                     @if(!$book->status == 'pending' || $book->status == 'request return')
